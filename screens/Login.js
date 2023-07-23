@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     marginLeft: 62,
   },
   materialButtonPrimary3: {
-    height: 73,
+    height: 53,
     width: 233,
     borderWidth: 0,
     borderColor: "#000000",

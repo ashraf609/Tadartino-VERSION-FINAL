@@ -1,14 +1,40 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { Component } from "react";
+import { View } from "react-native";
 import { StyleSheet, TouchableOpacity, Text } from "react-native";
 
 function MaterialButtonPrimary3(props) {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity
-      style={[styles.container, props.style]}
-      onPress={props.onPress}
-    >
-      <Text style={styles.button}>Retour à la page principale</Text>
-    </TouchableOpacity>
+    <>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Text style={styles.button}>Avez vous deja un compte? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+          <Text
+            style={{
+              color: "rgba(74,144,226,1)",
+              borderBottomWidth: 1,
+              borderBottomColor: "#ccc",
+            }}
+          >
+            S'authentifier
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        style={[styles.container, props.style]}
+        onPress={props.onPress}
+      >
+        <Text style={styles.button}>Retour à la page principale</Text>
+      </TouchableOpacity>
+    </>
   );
 }
 
