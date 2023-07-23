@@ -17,7 +17,8 @@ import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import Swiper from "react-native-swiper";
 import MaterialButtonPrimary30 from "../components/MaterialButtonPrimary30";
 import MaterialButtonPrimary51 from "../components/MaterialButtonPrimary31";
-import { useDispatch } from "react-redux";
+import { get_item_action } from "../State/Actions/ItemAction";
+import { useDispatch, useSelector } from "react-redux";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 function Details(props) {
@@ -28,11 +29,24 @@ function Details(props) {
   const [floors, setFloors] = useState([]);
   const get_item = useSelector((state) => state.get_item);
   const dispatch = useDispatch();
-  console.log(id);
+  console.log(id, get_item);
+  useEffect(() => {
+    dispatch(get_item_action(null, id));
+  }, [id]);
+  //setting / collecting images from object response
+  useEffect(() => {
+    if (get_item.data) {
+      setData(get_item.data?.at(0));
+
+      setImages(get_item.data?.map((item) => item.image));
+      setFloors(get_item.data?.map((item) => item.floor));
+    }
+  }, [get_item]);
 
   const renderPagination = (index, total, context) => {
     return null; // Return null to hide the pagination buttons
   };
+
   const loadFonts = async () => {
     await Font.loadAsync({
       // Use the actual font name here, and the path to the font file
@@ -53,26 +67,13 @@ function Details(props) {
       />
     );
   }
-
-  useEffect(() => {
-    dispatch(get_item_action(null, id));
-  }, [id]);
-  //setting / collecting images from object response
-  useEffect(() => {
-    if (get_item.data) {
-      setData(get_item.data?.at(0));
-
-      setImages(get_item.data?.map((item) => item.image));
-      setFloors(get_item.data?.map((item) => item.floor));
-    }
-  }, [get_item]);
   return (
     <View style={styles.container}>
       <View style={styles.rect1StackStackStack}>
         <View style={styles.rect1StackStack}>
           <View style={styles.rect1Stack}>
             <View style={styles.rect1}>
-              <Text style={styles.maison1}>{data.type}</Text>
+              <Text style={styles.maison1}>{data.item_type}</Text>
               <Text style={styles.maisonAvecJardin1}>{data.title}</Text>
               <View style={styles.button3Row}>
                 <TouchableOpacity style={styles.button3}>
@@ -84,20 +85,27 @@ function Details(props) {
                   />
                 </TouchableOpacity>
                 <Text style={styles.maisonAvecJardin2}>
-                  Salon et sejour de 80 m²
+                  {data.item_type} de {data.surface} m²
                 </Text>
               </View>
               <View style={styles.button4Row}>
                 <TouchableOpacity style={styles.button4}>
-                  <Icon
+                  {/* <Icon
                     name="bed"
                     size={34}
+                    style={styles.iconRow}
+                    color="white"
+                  /> */}
+                  <Feather
+                    name="home"
+                    size={35}
                     style={styles.iconRow}
                     color="white"
                   />
                 </TouchableOpacity>
                 <Text style={styles.maisonAvecJardin3}>
-                  3 lit de 60 m² avec des &nbsp;balcons
+                  {data.nbEtage} etage(s) de {data.nb_chambres} chambre(s) avec{" "}
+                  {data.nb_cuisines} cuisine(s) et {data.nb_salons} salon(s){" "}
                 </Text>
               </View>
               <View style={styles.button5Row}>
@@ -109,19 +117,21 @@ function Details(props) {
                     color="white"
                   />
                 </TouchableOpacity>
-                <Text style={styles.maisonAvecJardin4}>2 salle de bains</Text>
+                <Text style={styles.maisonAvecJardin4}>
+                  {data.nb_sales_de_bain} salle(s) de bains
+                </Text>
               </View>
               <View style={styles.button6Row}>
                 <TouchableOpacity style={styles.button6}>
                   <Icons
-                    name="hanger"
+                    name="cash"
                     size={34}
                     style={styles.iconRow}
                     color="white"
                   />
                 </TouchableOpacity>
                 <Text style={styles.maisonAvecJardin5}>
-                  Une Grande Cuisine bien equipée
+                  {data?.price || "Prix non spécifié"}{" "}
                 </Text>
               </View>
             </View>
@@ -133,11 +143,12 @@ function Details(props) {
               renderPagination={renderPagination}
               loop={false}
             >
-              {images?.map((item) => (
+              {images?.map((item, key) => (
                 <Image
                   source={{ uri: item }}
                   resizeMode="contain"
                   style={styles.image1}
+                  key={key}
                 ></Image>
               ))}
               {/* <Image

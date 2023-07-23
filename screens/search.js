@@ -83,6 +83,7 @@ function Search(props) {
       },
     };
     data.current = searchData;
+    console.log("requesting ...");
     searchHandler(false, "city", " like ", data.current?.city?.values || "%");
   }, []);
 
@@ -318,23 +319,19 @@ function Search(props) {
         </View>
         <Text style={styles.recherche}>Recherche</Text>
       </View>
-      {elts?.length > 0 && (
-        <Swiper style={{ marginTop: "170%" }} showsButtons loop={false}>
-          {elts?.map((item, idx) => (
-            <SingleItem data={item} key={idx} />
-          ))}
-        </Swiper>
-      )}
+      <Swiper style={{ marginTop: "170%" }} showsButtons loop={false}>
+        {elts?.length > 0 ? (
+          elts?.map((item, idx) => <SingleItem data={item} key={idx} />)
+        ) : (
+          <></>
+        )}
+      </Swiper>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container0: {
-    flex: 1,
-    height: "100%",
-    flexDirection: "column",
-  },
+  container0: {},
   container: {
     flex: 1,
     position: "relative",
