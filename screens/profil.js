@@ -19,12 +19,29 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ico from "react-native-vector-icons/Entypo";
 import MaterialIconTextButtonsFooter from "../components/MaterialIconTextButtonsFooter";
+import { useDispatch, useSelector } from "react-redux";
+import { get_personal_info_action } from "../State/Actions/UserAction";
+import {
+  get_liked_item_action,
+  get_user_items_action,
+} from "../State/Actions/ItemAction";
+import SingleItem from "../components/SingleItem";
 function Profil(props) {
+  const user_info = useSelector((state) => state.user_info);
+  const get_user_items = useSelector((state) => state.get_user_items);
+  const get_liked_items = useSelector((state) => state.get_liked_items);
+  const personal_data = useSelector((state) => state.personal_data);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [flipAnimation] = useState(new Animated.Value(0));
   const [showNumbers, setShowNumbers] = useState(false);
   const [showIcon, setShowIcon] = useState(true);
   const [flippedButtonIndex, setFlippedButtonIndex] = useState(null);
+  const [data, setData] = useState([]);
+
+  const dispatch = useDispatch();
+  console.log(user_info);
+
+  const { id } = props.route?.params;
   const loadFonts = async () => {
     await Font.loadAsync({
       // Use the actual font name here, and the path to the font file
@@ -36,6 +53,22 @@ function Profil(props) {
   useEffect(() => {
     loadFonts();
   }, []);
+  //getting specific data of user
+  useEffect(() => {
+    dispatch(get_personal_info_action(user_info.user?.token, id));
+    dispatch(get_liked_item_action(user_info.user?.token, id));
+    dispatch(get_user_items_action(user_info.user?.token, id));
+  }, [dispatch, user_info.user?.token]);
+  useEffect(() => {
+    setData(
+      [...new Set(get_user_items.data?.map((item) => item.item_id))]
+        .map((item) =>
+          get_user_items.data?.find((elt) => elt?.item_id === item)
+        )
+        ?.reverse()
+    );
+  }, [get_user_items.data]);
+
   const startFlippingAnimation = (index) => {
     setShowNumbers(true);
     setFlippedButtonIndex(index);
@@ -97,14 +130,27 @@ function Profil(props) {
             ry={72}
           ></Ellipse>
         </Svg>
-        <Image
-          source={require("../assets/profil.png")}
-          resizeMode="contain"
-          style={styles.images}
-        ></Image>
+        {personal_data.data?.picture ? (
+          <Image
+            source={{ uri: personal_data.data?.picture }}
+            resizeMode="contain"
+            style={styles.images}
+          ></Image>
+        ) : (
+          <Image
+            source={require("../assets/defaultProfil.png")}
+            resizeMode="contain"
+            style={styles.images}
+          ></Image>
+        )}
       </View>
-      <Text style={styles.profil1}>Profil 1</Text>
-      <Text style={styles.description}>Description</Text>
+      <Text style={styles.profil1}>
+        {personal_data.data?.first_name + " " + personal_data.data?.last_name}
+      </Text>
+      {/* <Text style={styles.description}>Description</Text> */}
+      <Text style={styles.description}>Email</Text>
+      <Text style={styles.description}>{personal_data.data?.email}</Text>
+
       <View style={styles.annonceDuProfilRow}>
         <Text style={styles.annonceDuProfil}>Annonce du Profil:</Text>
         <TouchableOpacity style={styles.buttons3}>
@@ -112,487 +158,11 @@ function Profil(props) {
         </TouchableOpacity>
       </View>
       <Swiper style={styles.wrapper} showsButtons loop={false}>
-        <View style={styles.rect2Stack}>
-          <View style={styles.rect2}>
-            <Text style={styles.maison}>Maison</Text>
-            <Text style={styles.maisonAvecJardin}>Maison avec jardin</Text>
-            <View style={styles.button3Row}>
-              <TouchableOpacity
-                style={[
-                  styles.button3,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 1 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Feather
-                    name="home"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 1 && (
-                  <Text style={styles.buttonText}>&nbsp;3</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button4,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 2 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(2)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bed"
-                    size={17}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 2 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button5,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 3 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(3)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bath"
-                    size={18}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 3 && (
-                  <Text style={styles.buttonText}>&nbsp;2</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button6,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 4 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Icons
-                    name="hanger"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 4 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-
-            <Image
-              source={require("../assets/House-PNG-Picture.png")}
-              resizeMode="contain"
-              style={styles.image}
-            ></Image>
-            <MaterialButtonPrimary5
-              style={styles.materialButtonPrimary5}
-            ></MaterialButtonPrimary5>
-          </View>
-        </View>
-        <View style={styles.rect2Stack}>
-          <View style={styles.rect2}>
-            <Text style={styles.maison}>Maison</Text>
-            <Text style={styles.maisonAvecJardin}>Maison avec jardin</Text>
-            <View style={styles.button3Row}>
-              <TouchableOpacity
-                style={[
-                  styles.button3,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 1 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Feather
-                    name="home"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 1 && (
-                  <Text style={styles.buttonText}>&nbsp;3</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button4,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 2 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(2)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bed"
-                    size={17}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 2 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button5,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 3 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(3)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bath"
-                    size={18}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 3 && (
-                  <Text style={styles.buttonText}>&nbsp;2</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button6,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 4 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Icons
-                    name="hanger"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 4 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-            <Image
-              source={require("../assets/House-PNG-Picture.png")}
-              resizeMode="contain"
-              style={styles.image}
-            ></Image>
-            <MaterialButtonPrimary5
-              style={styles.materialButtonPrimary5}
-            ></MaterialButtonPrimary5>
-          </View>
-        </View>
-        <View style={styles.rect2Stack}>
-          <View style={styles.rect2}>
-            <Text style={styles.maison}>Maison</Text>
-            <Text style={styles.maisonAvecJardin}>Maison avec jardin</Text>
-            <View style={styles.button3Row}>
-              <TouchableOpacity
-                style={[
-                  styles.button3,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 1 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Feather
-                    name="home"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 1 && (
-                  <Text style={styles.buttonText}>&nbsp;3</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button4,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 2 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(2)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bed"
-                    size={17}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 2 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button5,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 3 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(3)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bath"
-                    size={18}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 3 && (
-                  <Text style={styles.buttonText}>&nbsp;2</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button6,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 4 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Icons
-                    name="hanger"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 4 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-            <Image
-              source={require("../assets/House-PNG-Picture.png")}
-              resizeMode="contain"
-              style={styles.image}
-            ></Image>
-            <MaterialButtonPrimary5
-              style={styles.materialButtonPrimary5}
-            ></MaterialButtonPrimary5>
-          </View>
-        </View>
-        <View style={styles.rect2Stack}>
-          <View style={styles.rect2}>
-            <Text style={styles.maison}>Maison</Text>
-            <Text style={styles.maisonAvecJardin}>Maison avec jardin</Text>
-            <View style={styles.button3Row}>
-              <TouchableOpacity
-                style={[
-                  styles.button3,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 1 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Feather
-                    name="home"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 1 && (
-                  <Text style={styles.buttonText}>&nbsp;3</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button4,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 2 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(2)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bed"
-                    size={17}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 2 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button5,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 3 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(3)}
-              >
-                {showIcon && (
-                  <Icon
-                    name="bath"
-                    size={18}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 3 && (
-                  <Text style={styles.buttonText}>&nbsp;2</Text>
-                )}
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.button6,
-                  {
-                    transform: [
-                      {
-                        rotateY:
-                          flippedButtonIndex === 4 ? flipInterpolation : "0deg",
-                      },
-                    ],
-                  },
-                ]}
-                onPress={() => startFlippingAnimation(1)}
-              >
-                {showIcon && (
-                  <Icons
-                    name="hanger"
-                    size={20}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                )}
-                {showNumbers && flippedButtonIndex === 4 && (
-                  <Text style={styles.buttonText}>&nbsp;1</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-            <Image
-              source={require("../assets/House-PNG-Picture.png")}
-              resizeMode="contain"
-              style={styles.image}
-            ></Image>
-            <MaterialButtonPrimary5
-              style={styles.materialButtonPrimary5}
-            ></MaterialButtonPrimary5>
-          </View>
-        </View>
+        {data?.length > 0 ? (
+          data?.map((item, key) => <SingleItem data={item} key={key} />)
+        ) : (
+          <></>
+        )}
       </Swiper>
     </View>
   );
@@ -704,7 +274,7 @@ const styles = StyleSheet.create({
     color: "#104d69",
     fontSize: 27,
     marginTop: 25,
-    marginLeft: 147,
+    textAlign: "center",
   },
   description: {
     fontFamily: "Hoefler",

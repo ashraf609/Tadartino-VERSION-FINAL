@@ -23,7 +23,7 @@ export default function SingleItem({ data }) {
               fontFamily: "Hoefler",
               textDecorationLine: "underline",
             }}
-            onPress={() => navigation.navigate("profil")}
+            onPress={() => navigation.navigate("profil",{id:data.user_id})}
           >
             Profil
           </Text>

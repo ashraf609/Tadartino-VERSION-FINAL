@@ -4,7 +4,6 @@
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 
 import thunk from "redux-thunk";
-import { composeWithDevTools } from "remote-redux-devtools";
 
 import {
   add_item_reducer,
@@ -51,7 +50,7 @@ import { loginReducer } from "./State/Reducers/UserReducer";
 
 const initialState = {
   user_info: {
-    user: { user: {} },
+    user: {},
   },
 };
 
@@ -101,8 +100,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducer,
   initialState,
-  //composeEnhancers(applyMiddleware(thunk)),
-  composeWithDevTools(applyMiddleware(thunk))
+  composeEnhancers(applyMiddleware(thunk))
 );
 
 export default store;

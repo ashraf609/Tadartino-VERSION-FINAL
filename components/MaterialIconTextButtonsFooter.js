@@ -4,20 +4,30 @@ import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommun
 import Icon from "react-native-vector-icons/FontAwesome";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 function MaterialIconTextButtonsFooter(props) {
   const navigation = useNavigation();
+  const user_info = useSelector((state) => state.user_info);
   return (
     <View style={[styles.container, props.style]}>
       <TouchableOpacity
         style={styles.buttonWrapper1}
-        onPress={() => navigation.navigate("profil")}
+        onPress={() =>
+          user_info.user?.token
+            ? navigation.navigate("profil", { id: user_info.user?.id })
+            : navigation.navigate("SignUp")
+        }
       >
         <FeatherIcon name="user" style={styles.icon1}></FeatherIcon>
         <Text style={styles.btn1Text}>User</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.activeButtonWrapper}
-        onPress={() => navigation.navigate("add")}
+        onPress={() =>
+          user_info.user?.token
+            ? navigation.navigate("add")
+            : navigation.navigate("SignUp")
+        }
       >
         <Icon name="plus" style={styles.activeIcon} />
         <Text style={styles.activeContent}>Add</Text>
