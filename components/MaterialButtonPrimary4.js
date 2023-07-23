@@ -7,7 +7,9 @@ function MaterialButtonPrimary4(props) {
       style={[styles.container, props.style]}
       onPress={props.onPress}
     >
-      <Text style={styles.rechercher}>Rechercher</Text>
+      <Text style={styles.rechercher}>
+        Rechercher ({props.resultNum + " resultat(s)"})
+      </Text>
     </TouchableOpacity>
   );
 }

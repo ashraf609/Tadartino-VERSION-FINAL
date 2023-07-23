@@ -34,7 +34,7 @@ export default function SingleItem({ data }) {
           style={styles.image}
         ></Image>
         <MaterialButtonPrimary5
-          onPress={() => navigation.navigate("details")}
+          onPress={() => navigation.navigate("details",{id:data.item_id})}
           style={styles.materialButtonPrimary5}
         ></MaterialButtonPrimary5>
       </View>

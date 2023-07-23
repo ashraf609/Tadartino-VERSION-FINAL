@@ -29,6 +29,8 @@ function Home(props) {
   const [showNumbers, setShowNumbers] = useState(false);
   const [showIcon, setShowIcon] = useState(true);
   const [flippedButtonIndex, setFlippedButtonIndex] = useState(null);
+  const [data, setData] = useState([]);
+
   const get_all_items = useSelector((state) => state.get_all_items);
   const dispatch = useDispatch();
   const loadFonts = async () => {
@@ -47,6 +49,13 @@ function Home(props) {
   useEffect(() => {
     dispatch(get_all_items_action());
   }, []);
+  useEffect(() => {
+    setData(
+      [...new Set(get_all_items.data?.map((item) => item.item_id))]
+        .map((item) => get_all_items.data?.find((elt) => elt?.item_id === item))
+        ?.reverse()
+    );
+  }, [get_all_items.data]);
 
   const startFlippingAnimation = (index) => {
     setShowNumbers(true);
@@ -183,7 +192,7 @@ function Home(props) {
            
           </View>
         </View> */}
-        {(get_all_items?.data || [])?.map((item, idx) => (
+        {data?.map((item, idx) => (
           <SingleItem data={item} key={idx} />
         ))}
       </Swiper>

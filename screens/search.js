@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -6,16 +6,143 @@ import {
   Image,
   ImageBackground,
   Text,
+  Dimensions,
   TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import MaterialButtonPrimary4 from "../components/MaterialButtonPrimary4";
 import * as Font from "expo-font";
+import Swiper from "react-native-swiper";
+
 import AppLoading from "expo-app-loading";
 import { Picker } from "@react-native-picker/picker";
+import { useDispatch, useSelector } from "react-redux";
+import { search_items_action } from "../State/Actions/ItemAction";
+import SingleItem from "../components/SingleItem";
+import { ScrollView } from "react-native-gesture-handler";
+
+//exporting search object
+export let searchData = {
+  city: {
+    op: "",
+    values: "",
+  },
+  surface: {
+    op: "",
+    values: "",
+  },
+  nbEtage: {
+    op: "",
+    values: "",
+  },
+  min_price: {
+    op: "",
+    values: "",
+  },
+  max_price: {
+    op: "",
+    values: "",
+  },
+  type: {
+    op: "",
+    values: "",
+  },
+  category: {
+    op: "like ",
+    values: "vente",
+  },
+  order_by: null,
+  desc: null,
+  table: "item",
+};
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 function Search(props) {
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
+  const search_items = useSelector((state) => state.search_items);
+  const [elts, setElts] = useState(search_items.data);
+
+  //data object to store search values
+
+  const data = useRef(searchData);
+  const dispatch = useDispatch();
+  console.log(search_items);
+
+  useEffect(() => {
+    searchData = {
+      ...searchData,
+      category: {
+        op: " like ",
+        values: "vente",
+      },
+      city: {
+        op: " like ",
+        values: "",
+      },
+    };
+    data.current = searchData;
+    searchHandler(false, "city", " like ", data.current?.city?.values || "%");
+  }, []);
+
+  const clearFilters = () => {
+    setElts([]);
+  };
+
+  useEffect(() => {
+    if (search_items.data) {
+      setElts(
+        [...new Set(search_items.data?.map((item) => item.item_id))].map(
+          (item) => search_items.data?.find((elt) => elt?.item_id === item)
+        )
+      );
+    }
+  }, [search_items]);
+  //search handler implementation
+
+  const searchHandler = (remove, key, op, value) => {
+    let info = {};
+
+    //asserting new data to data obj
+    if (key?.length > 0 && value.length > 0 && data?.current[key]) {
+      //removing an element from the search
+      if (remove) {
+        data.current[key].values = data.current[key]?.values.filter(
+          (item) => item !== value
+        );
+      } else {
+        if (
+          typeof data.current[key]?.values !== "string" &&
+          typeof data.current[key]?.values !== "number"
+        ) {
+          if (typeof value !== "string") {
+            data.current[key]?.values.concat(value);
+          } else {
+            data.current[key]?.values.push(value);
+          }
+          data.current[key].values = [...new Set(data.current[key].values)];
+        } else {
+          data.current[key].values = value;
+        }
+      }
+      data.current[key].op = op;
+      for (const [the_key, elt] of Object.entries(data.current)) {
+        if (elt?.length > 0 || elt > 0 || elt?.values?.length > 0) {
+          info[the_key] = elt;
+        }
+      }
+    } else {
+      info = {
+        table: "item",
+        city: {
+          op: " like ",
+          values: "%",
+        },
+      };
+    }
+    dispatch(search_items_action(null, info));
+  };
   const loadFonts = async () => {
     await Font.loadAsync({
       // Use the actual font name here, and the path to the font file
@@ -38,105 +165,179 @@ function Search(props) {
     );
   }
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonRow}>
-        <View style={styles.rect1}></View>
-        <Image
-          source={require("../assets/rect.png")}
-          resizeMode="contain"
-          style={styles.imagens}
-        ></Image>
-      </View>
-      <View style={styles.imageStack}>
-        <ImageBackground
-          source={require("../assets/Background-investigation-row1.png")}
-          resizeMode="contain"
-          style={styles.image}
-          imageStyle={styles.image_imageStyle}
-        >
-          <MaterialButtonPrimary4
-            style={styles.materialButtonPrimary4}
-            onPress={() => props.navigation.navigate("profil")}
-          ></MaterialButtonPrimary4>
-        </ImageBackground>
-        <View style={styles.rect2}>
-          <Text style={styles.zoneDeRecherche}>Zone de Recherche</Text>
-          <TextInput
-            placeholder="     Recherche"
-            textBreakStrategy="highQuality"
-            autoCapitalize="words"
-            keyboardType="default"
-            returnKeyType="next"
-            style={styles.textInput1}
-          ></TextInput>
-          <Text placeholder="     Type" style={styles.typeDeBiens2}>
-            Type de biens
-          </Text>
-          <Picker
-            selectedValue={selectedValue}
-            onValueChange={(itemValue) => setSelectedValue(itemValue)}
-            style={styles.typeDeBiens}
+    <ScrollView style={styles.container0}>
+      <View style={styles.container}>
+        <View style={styles.buttonRow}>
+          <View style={styles.rect1}></View>
+          <Image
+            source={require("../assets/rect.png")}
+            resizeMode="contain"
+            style={styles.imagens}
+          ></Image>
+        </View>
+        <View style={styles.imageStack}>
+          <ImageBackground
+            source={require("../assets/Background-investigation-row1.png")}
+            resizeMode="contain"
+            style={styles.image}
+            imageStyle={styles.image_imageStyle}
           >
-            <Picker.Item
-              label="Villas"
-              value="Villas"
+            <MaterialButtonPrimary4
+              style={styles.materialButtonPrimary4}
+              onPress={() => props.navigation.navigate("profil")}
+              resultNum={elts?.length}
+            ></MaterialButtonPrimary4>
+          </ImageBackground>
+          <View style={styles.rect2}>
+            <Text style={styles.zoneDeRecherche}>Zone de Recherche</Text>
+            <TextInput
+              placeholder="     Recherche"
+              textBreakStrategy="highQuality"
+              autoCapitalize="words"
+              keyboardType="default"
+              returnKeyType="next"
+              onChangeText={(text) =>
+                searchHandler(
+                  false,
+                  "city",
+                  " like ",
+                  text + (text?.length > 0 ? "%" : "")
+                )
+              }
+              style={styles.textInput1}
+            ></TextInput>
+            <Text placeholder="     Type" style={styles.typeDeBiens2}>
+              Type de recherche
+            </Text>
+            <Picker
+              selectedValue={selectedValue}
+              //onValueChange={(itemValue) => setSelectedValue(itemValue)}
+              onValueChange={(itemValue) =>
+                searchHandler(
+                  false,
+                  "categorie",
+                  " like ",
+                  itemValue + (itemValue?.length > 0 ? "%" : "")
+                )
+              }
               style={styles.typeDeBiens}
-            />
-            <Picker.Item label="Terrain" value="Terrain" />
-            <Picker.Item label="Maison" value="Maison" />
-            <Picker.Item label="Appartement" value="Appartement" />
-          </Picker>
-          <Text
-            keyboardType="numeric"
-            placeholder="    Nombre"
-            style={styles.nombreDePieces2}
-          >
-            Nombre de pièces
-          </Text>
-          <TextInput
-            placeholder="    Nombre de pieces"
-            textBreakStrategy="highQuality"
-            autoCapitalize="words"
-            keyboardType="numeric"
-            returnKeyType="next"
-            style={styles.nombreDePieces}
-          ></TextInput>
-          <TextInput
-            placeholder="Prix"
-            textBreakStrategy="highQuality"
-            autoCapitalize="words"
-            keyboardType="email-address"
-            returnKeyType="next"
-            style={styles.prix}
-          ></TextInput>
-          <View style={styles.textInput4Row}>
+            >
+              <Picker.Item
+                label="Achat"
+                value="vente"
+                style={styles.typeDeBiens}
+              />
+              <Picker.Item label="Location" value="location" />
+            </Picker>
+            <Text placeholder="     Type" style={styles.typeDeBiens2}>
+              Type de biens
+            </Text>
+            <Picker
+              selectedValue={selectedValue}
+              //onValueChange={(itemValue) => setSelectedValue(itemValue)}
+              onValueChange={(itemValue) =>
+                searchHandler(
+                  false,
+                  "type",
+                  " like ",
+                  itemValue + (itemValue?.length > 0 ? "%" : "")
+                )
+              }
+              style={styles.typeDeBiens}
+            >
+              <Picker.Item
+                label="Villas"
+                value="Villas"
+                style={styles.typeDeBiens}
+              />
+              <Picker.Item label="Terrain" value="Terrain" />
+              <Picker.Item label="Maison" value="Maison" />
+              <Picker.Item label="Appartement" value="Appartement" />
+            </Picker>
+            <Text
+              keyboardType="numeric"
+              placeholder="    Nombre"
+              style={styles.nombreDePieces2}
+            >
+              Nombre de pièces
+            </Text>
             <TextInput
-              placeholder="     Min"
+              placeholder="    Nombre de pieces"
               textBreakStrategy="highQuality"
               autoCapitalize="words"
               keyboardType="numeric"
               returnKeyType="next"
-              style={styles.textInput4}
+              style={styles.nombreDePieces}
+              onChangeText={(text) =>
+                searchHandler(
+                  false,
+                  "nbEtage",
+                  text > 0 ? " <= " : " >= ",
+                  text
+                )
+              }
             ></TextInput>
             <TextInput
-              placeholder="     Max"
+              placeholder="Prix"
               textBreakStrategy="highQuality"
               autoCapitalize="words"
-              keyboardType="numeric"
+              keyboardType="email-address"
               returnKeyType="next"
-              style={styles.textInput3}
+              style={styles.prix}
             ></TextInput>
+            <View style={styles.textInput4Row}>
+              <TextInput
+                placeholder="     Min"
+                textBreakStrategy="highQuality"
+                autoCapitalize="words"
+                keyboardType="numeric"
+                returnKeyType="next"
+                style={styles.textInput4}
+                onChangeText={(text) =>
+                  searchHandler(false, "min_price", " >= ", text)
+                }
+              ></TextInput>
+              <TextInput
+                placeholder="     Max"
+                textBreakStrategy="highQuality"
+                autoCapitalize="words"
+                keyboardType="numeric"
+                returnKeyType="next"
+                style={styles.textInput3}
+                onChangeText={(text) =>
+                  searchHandler(
+                    false,
+                    "max_price",
+                    text > 0 ? " <= " : " >= ",
+                    text
+                  )
+                }
+              ></TextInput>
+            </View>
           </View>
         </View>
+        <Text style={styles.recherche}>Recherche</Text>
       </View>
-      <Text style={styles.recherche}>Recherche</Text>
-    </View>
+      {elts?.length > 0 && (
+        <Swiper style={{ marginTop: "170%" }} showsButtons loop={false}>
+          {elts?.map((item, idx) => (
+            <SingleItem data={item} key={idx} />
+          ))}
+        </Swiper>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  container0: {
+    flex: 1,
+    height: "100%",
+    flexDirection: "column",
+  },
   container: {
     flex: 1,
+    position: "relative",
   },
   button1: {
     width: 49,
@@ -189,7 +390,7 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   image: {
-    top: 420,
+    top: 460,
     left: 0,
     width: 393,
     height: 266,
@@ -202,14 +403,16 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: "#000000",
     borderRadius: 19,
-    marginTop: 24,
+    marginTop: 200,
     marginLeft: 84,
   },
   rect2: {
     top: 0,
     left: 37,
-    width: 330,
-    height: 420,
+    width: windowWidth * 0.8, // Responsive width
+    //height: windowHeight * 0.7, // Responsive height
+    height: 560,
+
     position: "absolute",
     backgroundColor: "#f7ffff",
     borderWidth: 0,
