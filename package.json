@@ -13,9 +13,6 @@
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
-  "overrides": {
-    "react-devtools-core": "^4.28.0"
-  },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/masked-view": "^0.1.11",
@@ -45,12 +42,13 @@
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.1.1",
     "redux": "^4.2.1",
-    "redux-thunk": "^2.4.2"
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.2",
+    "remote-redux-devtools": "^0.5.16"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "react-native-asset": "^2.1.1",
-    "remote-redux-devtools": "^0.5.16"
+    "react-native-asset": "^2.1.1"
   },
   "private": true
 }

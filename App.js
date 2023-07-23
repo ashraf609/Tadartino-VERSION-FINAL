@@ -16,6 +16,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 const Stack = createNativeStackNavigator();
+
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

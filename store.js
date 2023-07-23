@@ -2,7 +2,10 @@
 /* eslint-disable spaced-comment */
 /* eslint-disable camelcase */
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+
 import thunk from "redux-thunk";
+import { composeWithDevTools } from "remote-redux-devtools";
+
 import {
   add_item_reducer,
   delete_item_reducer,
@@ -93,12 +96,13 @@ const reducer = combineReducers({
   delete_sub: delete_sub_reducer,
 });
 
-const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   reducer,
   initialState,
-  composeEnhancer(applyMiddleware(thunk))
+  //composeEnhancers(applyMiddleware(thunk)),
+  composeWithDevTools(applyMiddleware(thunk))
 );
 
 export default store;
