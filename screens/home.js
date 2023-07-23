@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     marginLeft: windowWidth * 0.05, // Responsive marginLeft
     bottom: -windowHeight * 0.03, // Responsive bottom
     position: "absolute",
-    top: 700,
+    top: 730,
   },
   rect2: {
     top: -75,

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -11,9 +11,44 @@ import {
 import MaterialButtonPrimary2 from "../components/MaterialButtonPrimary2";
 import MaterialButtonPrimary3 from "../components/MaterialButtonPrimary3";
 import * as Font from "expo-font";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
+import { loginAction, registerAction } from "../State/Actions/UserAction";
+
+import AsyncStorage from "@react-native-community/async-storage";
 import AppLoading from "expo-app-loading";
-function Login(props) {
+function Login(props, { onHide, login }) {
+  const navigation = useNavigation();
   const [isFontLoaded, setFontLoaded] = useState(false);
+  const [error, setError] = useState(null);
+  const [email, setEmail] = useState("");
+  const [signup, setSignup] = useState(!login);
+  const [stayConn, setStayConn] = useState(false);
+  const [password, setPassword] = useState("");
+  const [showWarning, setShowWarning] = useState(false);
+  const [showWarningPas, setShowWarningPass] = useState(false);
+  const user_info = useSelector((state) => state.user_info);
+  const dispatch = useDispatch();
+  const infoRef = useRef({});
+  const isPasswordValid = (password) => {
+    const minLength = 8;
+    const hasCapitalLetter = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    return password.length >= minLength && hasCapitalLetter && hasNumber;
+  };
+  const handleButtonPrimaryClick = () => {
+    if (!email.includes("@") || !password) {
+      setShowWarning(true);
+    }
+    if (!isPasswordValid(password)) {
+      setShowWarningPass(true);
+    } else {
+      setShowWarning(false);
+      navigateToHome();
+      LoginHandler();
+      // Handle the logic when both inputs have values...
+    }
+  };
 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -22,6 +57,71 @@ function Login(props) {
     });
     setFontLoaded(true);
   };
+  const getInfo = () => {
+    let info = {};
+    for (const [key, value] of Object.entries(infoRef.current)) {
+      if (value.value?.length > 0) {
+        info[key] = value.value;
+      }
+    }
+    info.type = "client";
+    if (info.email?.includes("@")) {
+      if (signup === false || info.first_name?.length > 0) {
+        if (signup === false || info.last_name?.length > 0) {
+          if (
+            signup === false ||
+            (info.password?.length > 0 &&
+              /^(?=.*[A-Z])(?=.*\d).{10,}$/.test(info.password))
+          ) {
+            return info;
+          } else {
+            setError("Entez un mot de passe valide");
+          }
+        } else {
+          setError("Le nom doit contenir que des lettres ");
+        }
+      } else {
+        setError("Entrer votre nom SVP");
+      }
+    } else {
+      setError("l'email doit contenir @");
+    }
+    return false;
+  };
+  const RegisterHandler = () => {
+    let getinfoVar = getInfo();
+    if (getinfoVar) {
+      dispatch(registerAction(getinfoVar));
+    }
+  };
+  const navigateToHome = () => {
+    navigation.navigate("home"); // Replace 'Home' with the name of your home screen component
+  };
+
+  //login handler
+  const LoginHandler = () => {
+    let getinfoVar = getInfo();
+    if (getinfoVar) {
+      dispatch(loginAction(getinfoVar));
+      navigateToHome(); // Call the function to navigate to the home screen
+    }
+  };
+
+  useEffect(() => {
+    if (user_info.user) {
+      user_info.user.new = false;
+      console.log(user_info);
+
+      // Save the updated user_info.user object to AsyncStorage
+      AsyncStorage.setItem("user_info", JSON.stringify(user_info.user))
+        .then(() => {
+          console.log("User info saved successfully!");
+        })
+        .catch((error) => {
+          console.error("Error saving user info:", error);
+        });
+    }
+  }, [stayConn, user_info]);
 
   useEffect(() => {
     loadFonts();
@@ -88,6 +188,8 @@ function Login(props) {
               autoCapitalize="words"
               keyboardType="email-address"
               returnKeyType="next"
+              onChangeText={(text) => setEmail(text)}
+              value={email}
               style={styles.textInput3}
             ></TextInput>
             <Text style={styles.entrezVotreEMail4}>
@@ -97,13 +199,25 @@ function Login(props) {
               placeholder="   Mot de passe"
               textBreakStrategy="highQuality"
               autoCapitalize="words"
-              keyboardType="email-address"
+              keyboardType="visible-password"
               returnKeyType="next"
+              onChangeText={(text) => setPassword(text)}
+              value={password}
               style={styles.textInput4}
             ></TextInput>
+            {showWarning && (
+              <Text style={styles.warningText}>
+                Both fields are required or email have contain @!
+              </Text>
+            )}
+            {showWarningPas && (
+              <Text style={styles.warningText}>
+                Password than be less than 8 caractere
+              </Text>
+            )}
             <MaterialButtonPrimary2
               style={styles.materialButtonPrimary2}
-              onPress={() => props.navigation.navigate("profil")}
+              onPress={handleButtonPrimaryClick}
             ></MaterialButtonPrimary2>
             <MaterialButtonPrimary3
               style={styles.materialButtonPrimary3}
@@ -121,6 +235,14 @@ function Login(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  warningText: {
+    fontFamily: "Hoefler",
+    color: "gold",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 10,
   },
   image1: {
     top: 38,
