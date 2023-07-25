@@ -6,6 +6,8 @@ import {
   ImageBackground,
   Text,
   TextInput,
+  Linking,
+  TouchableOpacity,
 } from "react-native";
 import MaterialButtonPrimary2 from "../components/MaterialButtonPrimary2";
 import * as Font from "expo-font";
@@ -19,6 +21,22 @@ function Add(props) {
       Hoefler: require("../assets/fonts/ufonts.com_hoefler-text.ttf"),
     });
     setFontLoaded(true);
+  };
+  const handleLinkPress = () => {
+    // URL to open when the link is pressed
+    const url = "https://tadartino.ma/sell";
+
+    // Checking if the device can open the URL
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          // If the URL can be opened, open it
+          return Linking.openURL(url);
+        } else {
+          console.log("Don't know how to open URI: " + url);
+        }
+      })
+      .catch((err) => console.error("An error occurred", err));
   };
 
   useEffect(() => {
@@ -45,29 +63,12 @@ function Add(props) {
         >
           <View style={styles.rect2}>
             <Text style={styles.sidentifier1}>Ajouter</Text>
-            <Text style={styles.entrezVotreEMail1}>Entrez votre E-mail:</Text>
-            <TextInput
-              placeholder="     Email"
-              textBreakStrategy="highQuality"
-              autoCapitalize="words"
-              keyboardType="email-address"
-              returnKeyType="next"
-              style={styles.textInput1}
-            ></TextInput>
-            <Text style={styles.entrezVotreEMail2}>
-              Entrew votre Mot de passe:
+            <Text style={styles.sidentifier2}>
+              Welcome to Tadartino.ma
+              <TouchableOpacity onPress={handleLinkPress}>
+                <Text style={styles.linkText}>Add Items</Text>
+              </TouchableOpacity>{" "}
             </Text>
-            <TextInput
-              placeholder="     Mot de passe"
-              textBreakStrategy="highQuality"
-              autoCapitalize="words"
-              keyboardType="email-address"
-              returnKeyType="next"
-              style={styles.textInput2}
-            ></TextInput>
-            <MaterialButtonPrimary2
-              style={styles.materialButtonPrimary1}
-            ></MaterialButtonPrimary2>
           </View>
         </ImageBackground>
         <View style={styles.rect1}></View>
@@ -110,12 +111,25 @@ const styles = StyleSheet.create({
     marginTop: 17,
     marginLeft: 90,
   },
+  sidentifier2: {
+    fontFamily: "Hoefler",
+    color: "#104d69",
+    fontSize: 29,
+    marginTop: 17,
+    marginLeft: 50,
+  },
   entrezVotreEMail1: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 14,
     marginTop: 97,
     marginLeft: 16,
+  },
+  linkText: {
+    fontFamily: "Hoefler",
+    color: "red",
+    fontSize: 29,
+    textDecorationLine: "underline",
   },
   textInput1: {
     fontFamily: "Hoefler",
