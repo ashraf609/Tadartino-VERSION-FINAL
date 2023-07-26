@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Immeuble",
+    "name": "Tadartino",
     "slug": "tadartinoappfinal",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,13 +11,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#104d69"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/output-onlinepngtools.png",
+        "foregroundImage": "./assets/lo9o.png",
         "backgroundColor": "#104d69"
       },
       "package": "com.ashrafdev33.Immeuble"
