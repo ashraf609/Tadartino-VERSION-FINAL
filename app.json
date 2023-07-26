@@ -4,28 +4,26 @@
     "slug": "tadartinoappfinal",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/output-onlinepngtools.png",
+    "icon": "./assets/lo9o.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/output-onlinepngtools.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#104d69"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/output-onlinepngtools.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#104d69"
       },
       "package": "com.ashrafdev33.Immeuble"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/lo9o.png"
     },
     "extra": {
       "eas": {
