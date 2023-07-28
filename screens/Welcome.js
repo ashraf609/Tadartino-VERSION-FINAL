@@ -7,7 +7,7 @@ function Welcome() {
   const navigation = useNavigation();
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
-
+  console.log("welcome page is running");
   useEffect(() => {
     const timer = setTimeout(() => {
       navigation.navigate("home"); // Replace "Home" with the name of your home screen

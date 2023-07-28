@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 function MaterialIconTextButtonsFooter(props) {
   const navigation = useNavigation();
   const user_info = useSelector((state) => state.user_info);
+  console.log("first");
   return (
     <View style={[styles.container, props.style]}>
       <TouchableOpacity

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -7,8 +7,6 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-import FeatherIcon from "react-native-vector-icons/Feather";
-import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { Feather } from "@expo/vector-icons";
@@ -19,6 +17,10 @@ import MaterialButtonPrimary30 from "../components/MaterialButtonPrimary30";
 import MaterialButtonPrimary51 from "../components/MaterialButtonPrimary31";
 import { get_item_action } from "../State/Actions/ItemAction";
 import { useDispatch, useSelector } from "react-redux";
+import { ScrollView } from "react-native";
+import { Modal } from "react-native";
+import ImageViewer from "react-native-image-zoom-viewer";
+
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 function Details(props) {
@@ -27,6 +29,8 @@ function Details(props) {
   const [data, setData] = useState({});
   const [images, setImages] = useState([]);
   const [floors, setFloors] = useState([]);
+  const [visible, setIsVisible] = useState(false);
+
   const get_item = useSelector((state) => state.get_item);
   const dispatch = useDispatch();
   console.log(id, get_item);
@@ -38,7 +42,11 @@ function Details(props) {
     if (get_item.data) {
       setData(get_item.data?.at(0));
 
-      setImages(get_item.data?.map((item) => item.image));
+      setImages(
+        get_item.data?.map((item) => {
+          return { url: item.image };
+        })
+      );
       setFloors(get_item.data?.map((item) => item.floor));
     }
   }, [get_item]);
@@ -67,168 +75,132 @@ function Details(props) {
       />
     );
   }
+  console.log(images);
   return (
-    <View style={styles.container}>
-      <View style={styles.rect1StackStackStack}>
-        <View style={styles.rect1StackStack}>
-          <View style={styles.rect1Stack}>
-            <View style={styles.rect1}>
-              <Text style={styles.maison1}>{data.item_type}</Text>
-              <Text style={styles.maisonAvecJardin1}>{data.title}</Text>
-              <View style={styles.button3Row}>
-                <TouchableOpacity style={styles.button3}>
-                  <Feather
-                    name="home"
-                    size={35}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                </TouchableOpacity>
-                <Text style={styles.maisonAvecJardin2}>
-                  {data.item_type} de {data.surface} m²
-                </Text>
-              </View>
-              <View style={styles.button4Row}>
-                <TouchableOpacity style={styles.button4}>
-                  {/* <Icon
+    <ScrollView contentContainerStyle={styles.container}>
+      {visible ? (
+        <Modal>
+          <ImageViewer
+            imageUrls={images}
+            enableSwipeDown
+            onSwipeDown={() => setIsVisible(false)}
+            onCancel={() => setIsVisible(false)}
+            enableImageZoom
+            backgroundColor="none"
+          />
+        </Modal>
+      ) : (
+        <Swiper style={styles.wrapper} showsButtons={false} loop={false}>
+          <ImageViewer
+            imageUrls={images}
+            enableSwipeDown
+            onSwipeDown={() => setIsVisible(false)}
+            onCancel={() => setIsVisible(false)}
+            enableImageZoom
+            backgroundColor="none"
+            style={{
+              position: "absolute",
+              top: 0,
+              borderRadius: 20,
+            }}
+            onClick={() => setIsVisible(true)}
+          />
+        </Swiper>
+      )}
+      {/* <Modal visible={visible} transparent={true}>
+        <ImageViewer
+          imageUrls={images}
+          enableSwipeDown
+          onSwipeDown={() => setIsVisible(false)}
+          onCancel={() => setIsVisible(false)}
+          enableImageZoom
+          backgroundColor="none"
+        />
+      </Modal> */}
+      <View style={styles.rect1}>
+        <Text style={styles.maison1}>{data.item_type}</Text>
+        <Text style={styles.maisonAvecJardin1}>{data.title}</Text>
+        <View style={styles.button3Row}>
+          <TouchableOpacity style={styles.button3}>
+            <Feather
+              name="home"
+              size={35}
+              style={styles.iconRow}
+              color="white"
+            />
+          </TouchableOpacity>
+          <Text style={styles.maisonAvecJardin2}>
+            {data.item_type} de {data.surface} m²
+          </Text>
+        </View>
+        <View style={styles.button3Row}>
+          <TouchableOpacity style={styles.button3}>
+            {/* <Icon
                     name="bed"
                     size={34}
                     style={styles.iconRow}
                     color="white"
                   /> */}
-                  <Feather
-                    name="home"
-                    size={35}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                </TouchableOpacity>
-                <Text style={styles.maisonAvecJardin3}>
-                  {data.nbEtage} etage(s) de {data.nb_chambres} chambre(s) avec{" "}
-                  {data.nb_cuisines} cuisine(s) et {data.nb_salons} salon(s){" "}
-                </Text>
-              </View>
-              <View style={styles.button5Row}>
-                <TouchableOpacity style={styles.button5}>
-                  <Icon
-                    name="bath"
-                    size={34}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                </TouchableOpacity>
-                <Text style={styles.maisonAvecJardin4}>
-                  {data.nb_sales_de_bain} salle(s) de bains
-                </Text>
-              </View>
-              <View style={styles.button6Row}>
-                <TouchableOpacity style={styles.button6}>
-                  <Icons
-                    name="cash"
-                    size={34}
-                    style={styles.iconRow}
-                    color="white"
-                  />
-                </TouchableOpacity>
-                <Text style={styles.maisonAvecJardin5}>
-                  {data?.price || "Prix non spécifié"}{" "}
-                </Text>
-              </View>
-            </View>
-            <Swiper
-              style={styles.wrapper}
-              showsButtons
-              pagination="false"
-              navigation="false"
-              renderPagination={renderPagination}
-              loop={false}
-            >
-              {images?.map((item, key) => (
-                <Image
-                  source={{ uri: item }}
-                  resizeMode="contain"
-                  style={styles.image1}
-                  key={key}
-                ></Image>
-              ))}
-              {/* <Image
-                source={require("../assets/House-PNG-Picture.png")}
-                resizeMode="contain"
-                style={styles.image1}
-              ></Image>
-              <Image
-                source={require("../assets/House-PNG-Picture.png")}
-                resizeMode="contain"
-                style={styles.image1}
-              ></Image>
-              <Image
-                source={require("../assets/House-PNG-Picture.png")}
-                resizeMode="contain"
-                style={styles.image1}
-              ></Image> */}
-            </Swiper>
-          </View>
+            <Feather
+              name="home"
+              size={35}
+              style={styles.iconRow}
+              color="white"
+            />
+          </TouchableOpacity>
+          <Text style={styles.maisonAvecJardin2}>
+            {data.nbEtage} etage(s) de {data.nb_chambres} chambre(s) avec{" "}
+            {data.nb_cuisines} cuisine(s) et {data.nb_salons} salon(s){" "}
+          </Text>
         </View>
-
-        <View style={styles.buttonRow}>
-          <View style={styles.rect10}></View>
-          <Image
-            source={require("../assets/rect.png")}
-            resizeMode="contain"
-            style={styles.imagens}
-          ></Image>
+        <View style={styles.button3Row}>
+          <TouchableOpacity style={styles.button3}>
+            <Icon name="bath" size={34} style={styles.iconRow} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.maisonAvecJardin2}>
+            {data.nb_sales_de_bain} salle(s) de bains
+          </Text>
+        </View>
+        <View style={styles.button3Row}>
+          <TouchableOpacity style={styles.button3}>
+            <Icons name="cash" size={34} style={styles.iconRow} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.maisonAvecJardin2}>
+            {data?.price || "Prix non spécifié"}{" "}
+          </Text>
         </View>
       </View>
-      <MaterialButtonPrimary30
-        style={{ width: 150, left: 10, top: -10, height: 50, borderRadius: 19 }}
-      ></MaterialButtonPrimary30>
-      <MaterialButtonPrimary51
+      <View
         style={{
-          width: 150,
-          left: 220,
-          top: -60,
-          height: 50,
-          borderRadius: 19,
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-around",
+          width: "100%",
+          marginTop: 10,
         }}
-      ></MaterialButtonPrimary51>
-    </View>
+      >
+        <MaterialButtonPrimary30
+          style={{ width: 150, height: 50, borderRadius: 19 }}
+        ></MaterialButtonPrimary30>
+        <MaterialButtonPrimary51
+          style={{
+            width: 150,
+            height: 50,
+            borderRadius: 19,
+          }}
+        ></MaterialButtonPrimary51>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  imagens: {
-    top: 31,
-    left: 125,
-    width: 134,
-    height: 190,
-    position: "absolute",
-  },
-  buttonRow: {
-    height: windowHeight * 0.1,
-    flexDirection: "row",
-    marginTop: -15,
-    marginLeft: windowWidth * 0.0, // Responsive marginLeft for the buttonRow
-    marginRight: windowWidth * 0.04, // Responsive marginRight for the buttonRow
-  },
-  rect10: {
-    top: 0,
-    width: 293,
-    height: 172,
-    position: "absolute",
-    backgroundColor: "#104d69",
-    borderRadius: 76,
-    left: 40,
-  },
-  rect1: {
-    top: 10,
-    left: windowWidth * 0,
-    width: windowWidth * 0.8,
-    height: windowHeight * 0.82,
-    position: "absolute",
-    backgroundColor: "rgba(255,255,255,1)",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    backgroundColor: "white",
     borderWidth: 0,
     borderColor: "#000000",
     borderRadius: 43,
@@ -241,25 +213,44 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.52,
     shadowRadius: 0,
     overflow: "visible",
+    marginHorizontal: "5%",
+    padding: 10,
+    marginVertical: 10,
   },
+  wrapper: {
+    height: "100%",
+    position: "relative",
+  },
+  imagens: {},
+  buttonRow: {
+    height: windowHeight * 0.1,
+    flexDirection: "row",
+    marginLeft: windowWidth * 0.0, // Responsive marginLeft for the buttonRow
+    marginRight: windowWidth * 0.04, // Responsive marginRight for the buttonRow
+  },
+  rect10: {
+    top: 0,
+    width: 293,
+    height: 172,
+    position: "absolute",
+    backgroundColor: "#104d69",
+    borderRadius: 76,
+    left: 40,
+  },
+  rect1: {},
   maison1: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 29,
-    marginTop: 235,
     marginLeft: 10,
   },
   maisonAvecJardin1: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 14,
-    marginTop: 43,
     marginLeft: 10,
   },
-  iconRow: {
-    marginLeft: 7,
-    marginTop: 3,
-  },
+  iconRow: {},
   button3: {
     width: 49,
     height: 46,
@@ -267,20 +258,22 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: "#000000",
     borderRadius: 26,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   maisonAvecJardin2: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 14,
     marginLeft: 42,
-    marginTop: 15,
   },
   button3Row: {
     height: 46,
     flexDirection: "row",
-    marginTop: 13,
-    marginLeft: 15,
+    alignItems: "center",
     marginRight: 90,
+    marginTop: 10,
   },
   button4: {
     width: 49,
@@ -295,12 +288,10 @@ const styles = StyleSheet.create({
     color: "#104d69",
     fontSize: 14,
     marginLeft: 42,
-    marginTop: 14,
   },
   button4Row: {
     height: 46,
     flexDirection: "row",
-    marginTop: 22,
     marginLeft: 15,
     marginRight: 90,
   },
@@ -317,12 +308,10 @@ const styles = StyleSheet.create({
     color: "#104d69",
     fontSize: 14,
     marginLeft: 42,
-    marginTop: 15,
   },
   button5Row: {
     height: 46,
     flexDirection: "row",
-    marginTop: 22,
     marginLeft: 15,
     marginRight: 90,
   },
@@ -339,28 +328,19 @@ const styles = StyleSheet.create({
     color: "#104d69",
     fontSize: 14,
     marginLeft: 42,
-    marginTop: 5,
   },
   button6Row: {
     height: 46,
     flexDirection: "row",
-    marginTop: 27,
     marginLeft: 15,
     marginRight: 90,
   },
-  image1: {
-    top: 0,
-    left: 26,
-    width: 244,
-    height: 312,
-    position: "absolute",
-  },
+  image1: {},
   rect1Stack: {
-    top: windowHeight * 0.03, // Responsive top for the rect1Stack
-    left: windowWidth * 0.1,
-    width: windowWidth * 0.8,
-    height: windowHeight * 0.8, // Responsive height for the rect1Stack
-    position: "absolute",
+    //top: windowHeight * 0.03, // Responsive top for the rect1Stack
+    //left: windowWidth * 0.1,
+    //width: windowWidth * 0.8,
+    //height: windowHeight * 0.8, // Responsive height for the rect1Stack
   },
   button1: {
     top: 3,
@@ -406,13 +386,7 @@ const styles = StyleSheet.create({
     height: 49,
     position: "absolute",
   },
-  rect1StackStack: {
-    top: 133,
-    left: 0,
-    width: 353,
-    height: 685,
-    position: "absolute",
-  },
+  rect1StackStack: {},
   rect2: {
     top: 0,
     width: windowWidth * 0.6,
@@ -422,12 +396,7 @@ const styles = StyleSheet.create({
     borderRadius: 76,
     left: windowWidth * 0.15,
   },
-  rect1StackStackStack: {
-    width: 353,
-    height: 818,
-    marginTop: -78,
-    marginLeft: 11,
-  },
+  rect1StackStackStack: {},
 });
 
 export default Details;

@@ -1,7 +1,5 @@
-/* eslint-disable import/no-duplicates */
-/* eslint-disable spaced-comment */
-/* eslint-disable camelcase */
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import { configureStore } from "@reduxjs/toolkit";
 
 import thunk from "redux-thunk";
 
@@ -52,6 +50,104 @@ const initialState = {
   user_info: {
     user: {},
   },
+  user_register: {
+    data: [],
+  },
+  personal_data: {
+    data: [],
+  },
+  get_users: {
+    data: [],
+  },
+  update_user: {
+    data: [],
+  },
+  delete_user: {
+    data: [],
+  },
+  //items
+  get_all_items: {
+    data: [],
+  },
+  get_item: {
+    data: [],
+  },
+  get_user_items: {
+    data: [],
+  },
+  get_latest_item: {
+    data: [],
+  },
+  search_item: {
+    data: [],
+  },
+  //to search for everything (included items )
+  search_items: {
+    data: [],
+  },
+  add_item: {
+    data: [],
+  },
+  like_item: {
+    data: [],
+  },
+  get_liked_items: {
+    data: [],
+  },
+  update_item: {
+    data: [],
+  },
+  delete_item: {
+    data: [],
+  },
+  //payements
+  get_all_payements: {
+    data: [],
+  },
+  get_payement: {
+    data: [],
+  },
+  add_payement: {
+    data: [],
+  },
+  update_payement: {
+    data: [],
+  },
+  delete_payement: {
+    data: [],
+  },
+  //requests
+  get_all_requests: {
+    data: [],
+  },
+  get_request: {
+    data: [],
+  },
+  add_request: {
+    data: [],
+  },
+  update_request: {
+    data: [],
+  },
+  delete_request: {
+    data: [],
+  },
+  //subs
+  get_all_subs: {
+    data: [],
+  },
+  get_sub: {
+    data: [],
+  },
+  add_sub: {
+    data: [],
+  },
+  update_sub: {
+    data: [],
+  },
+  delete_sub: {
+    data: [],
+  },
 };
 
 const reducer = combineReducers({
@@ -95,12 +191,6 @@ const reducer = combineReducers({
   delete_sub: delete_sub_reducer,
 });
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-const store = createStore(
-  reducer,
-  initialState,
-  composeEnhancers(applyMiddleware(thunk))
-);
+const store = configureStore({ reducer, initialState }, applyMiddleware(thunk));
 
 export default store;

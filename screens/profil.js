@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   Animated,
+  ScrollView,
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import Svg, { Ellipse } from "react-native-svg";
@@ -13,12 +14,6 @@ import EvilIconsIcon from "react-native-vector-icons/EvilIcons";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import Swiper from "react-native-swiper";
-import MaterialButtonPrimary5 from "../components/MaterialButtonPrimary5";
-import { Feather } from "@expo/vector-icons";
-import Icon from "react-native-vector-icons/FontAwesome";
-import Icons from "react-native-vector-icons/MaterialCommunityIcons";
-import Ico from "react-native-vector-icons/Entypo";
-import MaterialIconTextButtonsFooter from "../components/MaterialIconTextButtonsFooter";
 import { useDispatch, useSelector } from "react-redux";
 import { get_personal_info_action } from "../State/Actions/UserAction";
 import {
@@ -101,15 +96,7 @@ function Profil(props) {
     );
   }
   return (
-    <View style={styles.container}>
-      <View style={styles.buttonRow}>
-        <View style={styles.rect10}></View>
-        <Image
-          source={require("../assets/rect.png")}
-          resizeMode="contain"
-          style={styles.imagens}
-        ></Image>
-      </View>
+    <ScrollView style={styles.container}>
       <View style={styles.button2Row}>
         <TouchableOpacity
           onPress={() => props.navigation.navigate("SignUp")}
@@ -157,14 +144,28 @@ function Profil(props) {
           <EvilIconsIcon name="search" style={styles.icons2}></EvilIconsIcon>
         </TouchableOpacity>
       </View>
-      <Swiper style={styles.wrapper} showsButtons loop={false}>
+      <Swiper
+        style={styles.wrapper}
+        inactiveSlideScale={10}
+        showsButtons
+        loop={false}
+      >
         {data?.length > 0 ? (
-          data?.map((item, key) => <SingleItem data={item} key={key} />)
+          data?.map((item, key) => (
+            <View
+              style={{
+                width: "90%",
+                marginHorizontal: "5%",
+              }}
+            >
+              <SingleItem data={item} key={key} />
+            </View>
+          ))
         ) : (
           <></>
         )}
       </Swiper>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -172,6 +173,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  wrapper: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   materialIconTextButtonsFooter: {
     height: 57,

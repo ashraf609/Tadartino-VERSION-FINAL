@@ -2,21 +2,25 @@ import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
 import React from "react";
 import MaterialButtonPrimary5 from "./MaterialButtonPrimary5";
 import { useNavigation } from "@react-navigation/native";
+
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function SingleItem({ data }) {
   const navigation = useNavigation();
   return (
-    <View style={styles.rect2Stack}>
+    <View style={styles.rect2Stack} >
+      <Image
+        source={{ uri: data.image }}
+        resizeMode="cover"
+        style={styles.image}
+      ></Image>
       <View style={styles.rect2}>
         <Text style={styles.maison}>{data.type}</Text>
         <Text style={styles.maisonAvecJardin}>{data.title}</Text>
         <View style={styles.button3Row}>
           <Text
             style={{
-              left: 210,
-              top: 40,
               fontSize: 20,
 
               color: "rgba(16,77,105,100)",
@@ -28,15 +32,12 @@ export default function SingleItem({ data }) {
             Profil
           </Text>
         </View>
-        <Image
-          source={{ uri: data.image }}
-          resizeMode="contain"
-          style={styles.image}
-        ></Image>
-        <MaterialButtonPrimary5
-          onPress={() => navigation.navigate("details",{id:data.item_id})}
-          style={styles.materialButtonPrimary5}
-        ></MaterialButtonPrimary5>
+        <View style={{justifyContent:"center",alignItems:"center",marginVertical:20}}>
+          <MaterialButtonPrimary5
+            onPress={() => navigation.navigate("details",{id:data.item_id})}
+            style={styles.materialButtonPrimary5}
+          ></MaterialButtonPrimary5>
+        </View>
       </View>
     </View>
   );
@@ -44,24 +45,13 @@ export default function SingleItem({ data }) {
 
 const styles = StyleSheet.create({
   rect2Stack: {
-    marginTop: windowHeight * 0.14,
-    width: windowWidth * 0.8, // Responsive width
+    //marginTop: windowHeight * 0.14,
+    width: "100%", // Responsive width
+    height:"100%",
     height: windowHeight * 0.7, // Responsive height
     alignItems: "center",
-    marginLeft: windowWidth * 0.1,
-  },
-  image: {
-    top: 20,
-    left: 15,
-    width: 284,
-    height: 312,
-    position: "absolute",
-  },
-  rect2: {
-    top: -75,
-    left: 5,
-    width: "100%",
-    height: "110%",
+    justifyContent:"space-between",
+    borderRadius: 43,
     backgroundColor: "rgba(255,255,255,1)",
     borderWidth: 0,
     borderColor: "#000000",
@@ -74,28 +64,38 @@ const styles = StyleSheet.create({
     elevation: 5,
     shadowOpacity: 0.52,
     shadowRadius: 0,
+    marginTop:10,
+
+    //marginLeft: windowWidth * 0.1,
+  },
+  image: {
+    minHeight:250,
+    width:"100%",
+    borderRadius:20
+  },
+  rect2: {
+    width: "100%",
     overflow: "visible",
   },
   maison: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 29,
-    marginTop: 342,
     marginLeft: 15,
   },
   maisonAvecJardin: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 14,
-    marginTop: 12,
     marginLeft: 15,
   },
   button3Row: {
     height: 46,
     flexDirection: "row",
-    marginTop: 14,
-    marginLeft: 24,
-    marginRight: 27,
+    alignItems:"center",
+    justifyContent:"flex-end",
+    paddingRight:15,
+
   },
   materialButtonPrimary5: {
     height: 59,
@@ -112,7 +112,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 0,
     overflow: "visible",
-    marginTop: 28,
-    marginLeft: 38,
   },
 });

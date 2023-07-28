@@ -1,15 +1,14 @@
-import React, { Component, useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
-  TouchableOpacity,
   Image,
   ImageBackground,
   Text,
   Dimensions,
   TextInput,
+  ScrollView,
 } from "react-native";
-import Icon from "react-native-vector-icons/Feather";
 import MaterialButtonPrimary4 from "../components/MaterialButtonPrimary4";
 import * as Font from "expo-font";
 import Swiper from "react-native-swiper";
@@ -19,7 +18,6 @@ import { Picker } from "@react-native-picker/picker";
 import { useDispatch, useSelector } from "react-redux";
 import { search_items_action } from "../State/Actions/ItemAction";
 import SingleItem from "../components/SingleItem";
-import { ScrollView } from "react-native-gesture-handler";
 
 //exporting search object
 export let searchData = {
