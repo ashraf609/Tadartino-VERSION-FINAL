@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ScrollView } from "react-native";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import { BackHandler } from "react-native";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -28,6 +29,8 @@ function Details(props) {
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [data, setData] = useState({});
   const [images, setImages] = useState([]);
+  //index of clicked upon image
+  const [index, setindex] = useState(0);
   const [floors, setFloors] = useState([]);
   const [visible, setIsVisible] = useState(false);
 
@@ -51,10 +54,6 @@ function Details(props) {
     }
   }, [get_item]);
 
-  const renderPagination = (index, total, context) => {
-    return null; // Return null to hide the pagination buttons
-  };
-
   const loadFonts = async () => {
     await Font.loadAsync({
       // Use the actual font name here, and the path to the font file
@@ -75,11 +74,12 @@ function Details(props) {
       />
     );
   }
+
   console.log(images);
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {visible ? (
-        <Modal>
+        <Modal onRequestClose={() => setIsVisible(false)}>
           <ImageViewer
             imageUrls={images}
             enableSwipeDown
@@ -87,24 +87,29 @@ function Details(props) {
             onCancel={() => setIsVisible(false)}
             enableImageZoom
             backgroundColor="none"
+            index={index}
           />
         </Modal>
       ) : (
-        <Swiper style={styles.wrapper} showsButtons={false} loop={false}>
-          <ImageViewer
-            imageUrls={images}
-            enableSwipeDown
-            onSwipeDown={() => setIsVisible(false)}
-            onCancel={() => setIsVisible(false)}
-            enableImageZoom
-            backgroundColor="none"
-            style={{
-              position: "absolute",
-              top: 0,
-              borderRadius: 20,
-            }}
-            onClick={() => setIsVisible(true)}
-          />
+        <Swiper>
+          {images?.map((item, key) => (
+            <TouchableOpacity
+              onPress={() => {
+                setindex(key), setIsVisible(true);
+              }}
+            >
+              <Image
+                source={{ uri: item.url }}
+                key={key}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: 20,
+                  objectFit: "cover",
+                }}
+              />
+            </TouchableOpacity>
+          ))}
         </Swiper>
       )}
       {/* <Modal visible={visible} transparent={true}>
@@ -180,7 +185,7 @@ function Details(props) {
           marginTop: 10,
         }}
       >
-        <MaterialButtonPrimary30
+        {/* <MaterialButtonPrimary30
           style={{ width: 150, height: 50, borderRadius: 19 }}
         ></MaterialButtonPrimary30>
         <MaterialButtonPrimary51
@@ -189,7 +194,7 @@ function Details(props) {
             height: 50,
             borderRadius: 19,
           }}
-        ></MaterialButtonPrimary51>
+        ></MaterialButtonPrimary51> */}
       </View>
     </ScrollView>
   );

@@ -150,12 +150,14 @@ function SignUp(props, { onHide, login }) {
           style={styles.image}
           imageStyle={styles.image_imageStyle}
         >
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate("Welcome")}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>Contactze nous</Text>
-          </TouchableOpacity>
+          <View style={{ alignItems: "center", justifyContent: "center" }}>
+            <TouchableOpacity
+              onPress={() => props.navigation.navigate("Welcome")}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>Contactez nous</Text>
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
         <Svg viewBox="0 0 491.2 278.05" style={styles.ellipse}>
           <Ellipse
@@ -237,6 +239,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,1)",
   },
@@ -258,7 +262,7 @@ const styles = StyleSheet.create({
     borderColor: "#104d69",
     borderRadius: 36,
     marginTop: 697,
-    marginLeft: 120,
+    textAlign: "center",
     justifyContent: "center", // Center content vertically
     alignItems: "center", // Center content horizontally
   },
@@ -289,12 +293,14 @@ const styles = StyleSheet.create({
   rect: {
     fontFamily: "Hoefler",
     top: 293,
-    left: 94,
     width: 333,
     height: 510,
     position: "absolute",
+    left: "15%",
     backgroundColor: "rgba(255,255,255,1)",
     borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
   },
   sauthentifier: {
     fontFamily: "Hoefler",
@@ -404,7 +410,6 @@ const styles = StyleSheet.create({
     width: 491,
     height: 949,
     marginTop: -111,
-    marginLeft: -68,
   },
 });
 

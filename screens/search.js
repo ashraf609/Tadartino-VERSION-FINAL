@@ -164,174 +164,157 @@ function Search(props) {
     );
   }
   return (
-    <ScrollView style={styles.container0}>
-      <View style={styles.container}>
-        <View style={styles.buttonRow}>
-          <View style={styles.rect1}></View>
-          <Image
-            source={require("../assets/rect.png")}
-            resizeMode="contain"
-            style={styles.imagens}
-          ></Image>
-        </View>
-        <View style={styles.imageStack}>
-          <ImageBackground
-            source={require("../assets/Background-investigation-row1.png")}
-            resizeMode="contain"
-            style={styles.image}
-            imageStyle={styles.image_imageStyle}
-          >
-            <MaterialButtonPrimary4
-              style={styles.materialButtonPrimary4}
-              onPress={() => props.navigation.navigate("profil")}
-              resultNum={elts?.length}
-            ></MaterialButtonPrimary4>
-          </ImageBackground>
-          <View style={styles.rect2}>
-            <Text style={styles.zoneDeRecherche}>Zone de Recherche</Text>
-            <TextInput
-              placeholder="     Recherche"
-              textBreakStrategy="highQuality"
-              autoCapitalize="words"
-              keyboardType="default"
-              returnKeyType="next"
-              onChangeText={(text) =>
-                searchHandler(
-                  false,
-                  "city",
-                  " like ",
-                  text + (text?.length > 0 ? "%" : "")
-                )
-              }
-              style={styles.textInput1}
-            ></TextInput>
-            <Text placeholder="     Type" style={styles.typeDeBiens2}>
-              Type de recherche
-            </Text>
-            <Picker
-              selectedValue={selectedValue}
-              //onValueChange={(itemValue) => setSelectedValue(itemValue)}
-              onValueChange={(itemValue) =>
-                searchHandler(
-                  false,
-                  "categorie",
-                  " like ",
-                  itemValue + (itemValue?.length > 0 ? "%" : "")
-                )
-              }
-              style={styles.typeDeBiens}
-            >
-              <Picker.Item
-                label="Achat"
-                value="vente"
-                style={styles.typeDeBiens}
-              />
-              <Picker.Item label="Location" value="location" />
-            </Picker>
-            <Text placeholder="     Type" style={styles.typeDeBiens2}>
-              Type de biens
-            </Text>
-            <Picker
-              selectedValue={selectedValue}
-              //onValueChange={(itemValue) => setSelectedValue(itemValue)}
-              onValueChange={(itemValue) =>
-                searchHandler(
-                  false,
-                  "type",
-                  " like ",
-                  itemValue + (itemValue?.length > 0 ? "%" : "")
-                )
-              }
-              style={styles.typeDeBiens}
-            >
-              <Picker.Item
-                label="Villas"
-                value="Villas"
-                style={styles.typeDeBiens}
-              />
-              <Picker.Item label="Terrain" value="Terrain" />
-              <Picker.Item label="Maison" value="Maison" />
-              <Picker.Item label="Appartement" value="Appartement" />
-            </Picker>
-            <Text
-              keyboardType="numeric"
-              placeholder="    Nombre"
-              style={styles.nombreDePieces2}
-            >
-              Nombre de pièces
-            </Text>
-            <TextInput
-              placeholder="    Nombre de pieces"
-              textBreakStrategy="highQuality"
-              autoCapitalize="words"
-              keyboardType="numeric"
-              returnKeyType="next"
-              style={styles.nombreDePieces}
-              onChangeText={(text) =>
-                searchHandler(
-                  false,
-                  "nbEtage",
-                  text > 0 ? " <= " : " >= ",
-                  text
-                )
-              }
-            ></TextInput>
-            <TextInput
-              placeholder="Prix"
-              textBreakStrategy="highQuality"
-              autoCapitalize="words"
-              keyboardType="email-address"
-              returnKeyType="next"
-              style={styles.prix}
-            ></TextInput>
-            <View style={styles.textInput4Row}>
-              <TextInput
-                placeholder="     Min"
-                textBreakStrategy="highQuality"
-                autoCapitalize="words"
-                keyboardType="numeric"
-                returnKeyType="next"
-                style={styles.textInput4}
-                onChangeText={(text) =>
-                  searchHandler(false, "min_price", " >= ", text)
-                }
-              ></TextInput>
-              <TextInput
-                placeholder="     Max"
-                textBreakStrategy="highQuality"
-                autoCapitalize="words"
-                keyboardType="numeric"
-                returnKeyType="next"
-                style={styles.textInput3}
-                onChangeText={(text) =>
-                  searchHandler(
-                    false,
-                    "max_price",
-                    text > 0 ? " <= " : " >= ",
-                    text
-                  )
-                }
-              ></TextInput>
-            </View>
-          </View>
-        </View>
+    <ScrollView contentContainerStyle={styles.container0}>
+      <View style={styles.rect2}>
         <Text style={styles.recherche}>Recherche</Text>
+
+        <Text style={styles.zoneDeRecherche}>Zone de Recherche</Text>
+        <TextInput
+          placeholder="     Recherche"
+          textBreakStrategy="highQuality"
+          autoCapitalize="words"
+          keyboardType="default"
+          returnKeyType="next"
+          onChangeText={(text) =>
+            searchHandler(
+              false,
+              "city",
+              " like ",
+              text + (text?.length > 0 ? "%" : "")
+            )
+          }
+          style={styles.textInput1}
+        ></TextInput>
+        <Text placeholder="     Type" style={styles.typeDeBiens2}>
+          Type de recherche
+        </Text>
+        <Picker
+          selectedValue={selectedValue}
+          //onValueChange={(itemValue) => setSelectedValue(itemValue)}
+          onValueChange={(itemValue) =>
+            searchHandler(
+              false,
+              "categorie",
+              " like ",
+              itemValue + (itemValue?.length > 0 ? "%" : "")
+            )
+          }
+          style={styles.typeDeBiens}
+        >
+          <Picker.Item label="Achat" value="vente" style={styles.typeDeBiens} />
+          <Picker.Item label="Location" value="location" />
+        </Picker>
+        <Text placeholder="     Type" style={styles.typeDeBiens2}>
+          Type de biens
+        </Text>
+        <Picker
+          selectedValue={selectedValue}
+          //onValueChange={(itemValue) => setSelectedValue(itemValue)}
+          onValueChange={(itemValue) =>
+            searchHandler(
+              false,
+              "type",
+              " like ",
+              itemValue + (itemValue?.length > 0 ? "%" : "")
+            )
+          }
+          style={styles.typeDeBiens}
+        >
+          <Picker.Item
+            label="Villas"
+            value="Villas"
+            style={styles.typeDeBiens}
+          />
+          <Picker.Item label="Terrain" value="Terrain" />
+          <Picker.Item label="Maison" value="Maison" />
+          <Picker.Item label="Appartement" value="Appartement" />
+        </Picker>
+        <Text
+          keyboardType="numeric"
+          placeholder="    Nombre"
+          style={styles.nombreDePieces2}
+        >
+          Nombre de pièces
+        </Text>
+        <TextInput
+          placeholder="    Nombre de pieces"
+          textBreakStrategy="highQuality"
+          autoCapitalize="words"
+          keyboardType="numeric"
+          returnKeyType="next"
+          style={styles.nombreDePieces}
+          onChangeText={(text) =>
+            searchHandler(false, "nbEtage", text > 0 ? " <= " : " >= ", text)
+          }
+        ></TextInput>
+        <TextInput
+          placeholder="Prix"
+          textBreakStrategy="highQuality"
+          autoCapitalize="words"
+          keyboardType="email-address"
+          returnKeyType="next"
+          style={styles.prix}
+        ></TextInput>
+        <View style={styles.textInput4Row}>
+          <TextInput
+            placeholder="     Min"
+            textBreakStrategy="highQuality"
+            autoCapitalize="words"
+            keyboardType="numeric"
+            returnKeyType="next"
+            style={styles.textInput4}
+            onChangeText={(text) =>
+              searchHandler(false, "min_price", " >= ", text)
+            }
+          ></TextInput>
+          <TextInput
+            placeholder="     Max"
+            textBreakStrategy="highQuality"
+            autoCapitalize="words"
+            keyboardType="numeric"
+            returnKeyType="next"
+            style={styles.textInput3}
+            onChangeText={(text) =>
+              searchHandler(
+                false,
+                "max_price",
+                text > 0 ? " <= " : " >= ",
+                text
+              )
+            }
+          ></TextInput>
+        </View>
+        <MaterialButtonPrimary4
+          style={styles.materialButtonPrimary4}
+          onPress={() => props.navigation.navigate("SearchResults")}
+          resultNum={elts?.length}
+        ></MaterialButtonPrimary4>
       </View>
-      <Swiper style={{ marginTop: "170%" }} showsButtons loop={false}>
+      <Image
+        source={require("../assets/Background-investigation-row1.png")}
+        resizeMode="contain"
+        style={styles.image}
+      />
+      {/* <Swiper style={{ marginTop: "170%" }} showsButtons loop={false}>
         {elts?.length > 0 ? (
           elts?.map((item, idx) => <SingleItem data={item} key={idx} />)
         ) : (
           <></>
         )}
-      </Swiper>
+      </Swiper> */}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container0: {},
+  container0: {
+    backgroundColor: "white",
+    alignItems: "center",
+    height: "100%",
+    paddingTop: 20,
+    position: "relative",
+  },
   container: {
-    flex: 1,
     position: "relative",
   },
   button1: {
@@ -385,11 +368,11 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   image: {
-    top: 460,
-    left: 0,
-    width: 393,
-    height: 266,
+    height: 300, // Responsive height,
+    width: 300,
     position: "absolute",
+    bottom: "-10%",
+    zIndex: -99,
   },
   image_imageStyle: {},
   materialButtonPrimary4: {
@@ -398,17 +381,13 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: "#000000",
     borderRadius: 19,
-    marginTop: 200,
-    marginLeft: 84,
+    margin: 0,
   },
   rect2: {
-    top: 0,
-    left: 37,
     width: windowWidth * 0.8, // Responsive width
-    //height: windowHeight * 0.7, // Responsive height
-    height: 560,
-
-    position: "absolute",
+    height: windowHeight * 0.7, // Responsive height
+    alignItems: "center",
+    justifyContent: "space-evenly",
     backgroundColor: "#f7ffff",
     borderWidth: 0,
     borderColor: "#000000",
@@ -426,8 +405,6 @@ const styles = StyleSheet.create({
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 17,
-    marginTop: 43,
-    marginLeft: 87,
   },
   textInput1: {
     fontFamily: "Hoefler",
@@ -438,16 +415,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(74,144,226,1)",
     borderRadius: 5,
-    marginTop: 9,
-    marginLeft: 15,
   },
   typeDeBiens2: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 17,
-
-    marginTop: 12,
-    marginLeft: 104,
   },
   typeDeBiens: {
     fontFamily: "Hoefler",
@@ -458,16 +430,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(74,144,226,1)",
     borderRadius: 5,
-    marginTop: 18,
-    marginLeft: 16,
   },
   nombreDePieces2: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 17,
-
-    marginTop: 12,
-    marginLeft: 95,
   },
   nombreDePieces: {
     fontFamily: "Hoefler",
@@ -478,8 +445,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(74,144,226,1)",
     borderRadius: 5,
-    marginTop: 13,
-    marginLeft: 18,
   },
   prix: {
     fontFamily: "Hoefler",
@@ -512,28 +477,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(74,144,226,1)",
     borderRadius: 5,
-    marginLeft: 110,
-    marginTop: 1,
   },
   textInput4Row: {
     height: 39,
+    width: "100%",
     flexDirection: "row",
-    marginTop: 4,
-    marginLeft: 18,
-    marginRight: 18,
+    alignItems: "center",
+    justifyContent: "space-around",
   },
-  imageStack: {
-    width: 393,
-    height: 632,
-    marginTop: 65,
-    marginLeft: -9,
-  },
+  imageStack: {},
   recherche: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 29,
-    marginTop: -677,
-    marginLeft: 123,
   },
 });
 

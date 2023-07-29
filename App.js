@@ -15,6 +15,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import Header from "./components/Header";
 import MaterialIconTextButtonsFooter from "./components/MaterialIconTextButtonsFooter";
+import SearchResults from "./screens/SearchResults";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -22,7 +23,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
+        <Stack.Navigator initialRouteName="home">
           <Stack.Screen
             name="Welcome"
             component={Welcome}
@@ -55,6 +56,13 @@ export default function App() {
           <Stack.Screen
             name="search"
             component={Search}
+            options={{
+              header: () => <Header />,
+            }}
+          />
+          <Stack.Screen
+            name="SearchResults"
+            component={SearchResults}
             options={{
               header: () => <Header />,
             }}
