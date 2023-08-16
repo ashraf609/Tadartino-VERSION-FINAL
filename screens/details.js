@@ -54,6 +54,23 @@ function Details(props) {
     }
   }, [get_item]);
 
+  function formatPrice(price) {
+    // Convert the price to a string if it's not already
+    price = price.toString();
+
+    // Add commas to the integer part
+    let formattedIntegerPart = "";
+    for (let i = 0; i < price.length; i++) {
+      formattedIntegerPart += price[i];
+      if ((price.length - i - 1) % 3 === 0 && i !== price.length - 1) {
+        formattedIntegerPart += ",";
+      }
+    }
+
+    return formattedIntegerPart;
+  }
+
+  //loading fonts
   const loadFonts = async () => {
     await Font.loadAsync({
       // Use the actual font name here, and the path to the font file
@@ -124,7 +141,22 @@ function Details(props) {
       </Modal> */}
       <View style={styles.rect1}>
         <Text style={styles.maison1}>{data.item_type}</Text>
-        <Text style={styles.maisonAvecJardin1}>{data.title}</Text>
+        <Text style={styles.maison1}>{data.city}</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-evenly",
+            flexWrap: "wrap",
+          }}
+        >
+          <Text style={styles.maisonAvecJardin1}>{data.title}</Text>
+          <Text style={styles.maisonAvecJardin1}>
+            {data?.price
+              ? formatPrice(data.price) + " MAD"
+              : "Prix non spécifié"}
+          </Text>
+        </View>
         <View style={styles.button3Row}>
           <TouchableOpacity style={styles.button3}>
             <Feather
@@ -138,40 +170,51 @@ function Details(props) {
             {data.item_type} de {data.surface} m²
           </Text>
         </View>
-        <View style={styles.button3Row}>
-          <TouchableOpacity style={styles.button3}>
-            {/* <Icon
+        {data?.item_type !== "terrain" && data?.item_type !== "garage" && (
+          <View style={styles.button3Row}>
+            <TouchableOpacity style={styles.button3}>
+              {/* <Icon
                     name="bed"
                     size={34}
                     style={styles.iconRow}
                     color="white"
                   /> */}
-            <Feather
-              name="home"
-              size={35}
-              style={styles.iconRow}
-              color="white"
-            />
-          </TouchableOpacity>
-          <Text style={styles.maisonAvecJardin2}>
-            {data.nbEtage} etage(s) de {data.nb_chambres} chambre(s) avec{" "}
-            {data.nb_cuisines} cuisine(s) et {data.nb_salons} salon(s){" "}
-          </Text>
-        </View>
-        <View style={styles.button3Row}>
-          <TouchableOpacity style={styles.button3}>
-            <Icon name="bath" size={34} style={styles.iconRow} color="white" />
-          </TouchableOpacity>
-          <Text style={styles.maisonAvecJardin2}>
-            {data.nb_sales_de_bain} salle(s) de bains
-          </Text>
-        </View>
+              <Feather
+                name="home"
+                size={35}
+                style={styles.iconRow}
+                color="white"
+              />
+            </TouchableOpacity>
+            <Text style={styles.maisonAvecJardin2}>
+              {data.nbEtage} etage(s) de {data.nb_chambres} chambre(s) avec{" "}
+              {data.nb_cuisines} cuisine(s) et {data.nb_salons} salon(s){" "}
+            </Text>
+          </View>
+        )}
+        {data?.item_type !== "terrain" && data?.item_type !== "garage" && (
+          <View style={styles.button3Row}>
+            <TouchableOpacity style={styles.button3}>
+              <Icon
+                name="bath"
+                size={34}
+                style={styles.iconRow}
+                color="white"
+              />
+            </TouchableOpacity>
+            <Text style={styles.maisonAvecJardin2}>
+              {data.nb_sales_de_bain} salle(s) de bains
+            </Text>
+          </View>
+        )}
         <View style={styles.button3Row}>
           <TouchableOpacity style={styles.button3}>
             <Icons name="cash" size={34} style={styles.iconRow} color="white" />
           </TouchableOpacity>
           <Text style={styles.maisonAvecJardin2}>
-            {data?.price || "Prix non spécifié"}{" "}
+            {data?.price
+              ? formatPrice(data.price) + " MAD"
+              : "Prix non spécifié"}{" "}
           </Text>
         </View>
       </View>
@@ -247,13 +290,13 @@ const styles = StyleSheet.create({
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 29,
-    marginLeft: 10,
+    textAlign: "center",
   },
   maisonAvecJardin1: {
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 14,
-    marginLeft: 10,
+    width: "90%",
   },
   iconRow: {},
   button3: {

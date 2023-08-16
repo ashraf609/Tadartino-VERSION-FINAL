@@ -1,13 +1,61 @@
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MaterialButtonPrimary5 from "./MaterialButtonPrimary5";
 import { useNavigation } from "@react-navigation/native";
+//ads
+import {
+  TestIds,
+  InterstitialAd,
+  AdEventType,
+} from "react-native-google-mobile-ads";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function SingleItem({ data }) {
+  const [loaded, setLoaded] = useState(false);
+
   const navigation = useNavigation();
+  //interstatial
+  //adUnitID Interstatial
+  const adUnitIdInterstitial =  __DEV__
+    ? TestIds.INTERSTITIAL
+    : "ca-app-pub-5392293533501938/1817063527"
+  const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterstitial, {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ["fashion", "clothing"],
+  });
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        setLoaded(true);
+      }
+    );
+
+    // Start loading the interstitial straight away
+    interstitial.load();
+
+    // Unsubscribe from events on unmount
+    return unsubscribe;
+  }, []);
+
+  const handleShowProfile = ()=>{
+    try {
+      interstitial.show();
+    } catch (error) {
+      console.log(error)
+    }
+    navigation.navigate("profil",{id:data.user_id})
+  }
+  const handleShowDetails = ()=>{
+    try {
+      interstitial.show();
+    }catch (error) {
+      console.log(error)
+    }
+    navigation.navigate("details",{id:data.item_id})
+  }
   return (
     <View style={styles.rect2Stack} >
       <Image
@@ -16,7 +64,11 @@ export default function SingleItem({ data }) {
         style={styles.image}
       ></Image>
       <View style={styles.rect2}>
-        <Text style={styles.maison}>{data.type}</Text>
+        <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",paddingHorizontal:"5%"}}>
+          <Text style={styles.maison}>{data.type}</Text>
+          <Text style={styles.maison}>{data.city}</Text>
+
+        </View>
         <Text style={styles.maisonAvecJardin}>{data.title}</Text>
         <View style={styles.button3Row}>
           <Text
@@ -27,14 +79,14 @@ export default function SingleItem({ data }) {
               fontFamily: "Hoefler",
               textDecorationLine: "underline",
             }}
-            onPress={() => navigation.navigate("profil",{id:data.user_id})}
+            onPress={handleShowProfile}
           >
             Profil
           </Text>
         </View>
         <View style={{justifyContent:"center",alignItems:"center",marginVertical:20}}>
           <MaterialButtonPrimary5
-            onPress={() => navigation.navigate("details",{id:data.item_id})}
+            onPress={handleShowDetails}
             style={styles.materialButtonPrimary5}
           ></MaterialButtonPrimary5>
         </View>
@@ -47,8 +99,6 @@ const styles = StyleSheet.create({
   rect2Stack: {
     //marginTop: windowHeight * 0.14,
     width: "100%", // Responsive width
-    height:"100%",
-    height: windowHeight * 0.7, // Responsive height
     alignItems: "center",
     justifyContent:"space-between",
     borderRadius: 43,
@@ -65,11 +115,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.52,
     shadowRadius: 0,
     marginTop:10,
-
+    height:"100%"
     //marginLeft: windowWidth * 0.1,
   },
   image: {
-    minHeight:250,
+    minHeight:"50%",
     width:"100%",
     borderRadius:20
   },

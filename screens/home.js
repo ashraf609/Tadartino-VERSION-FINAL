@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Image, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import Swiper from "react-native-swiper";
@@ -7,6 +14,8 @@ import MaterialIconTextButtonsFooter from "../components/MaterialIconTextButtons
 import { useDispatch, useSelector } from "react-redux";
 import { get_all_items_action } from "../State/Actions/ItemAction";
 import SingleItem from "../components/SingleItem";
+
+import { useNavigation } from "@react-navigation/native";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 function Home(props) {
@@ -49,13 +58,26 @@ function Home(props) {
       />
     );
   }
+  const searchIconHandler = () => {
+    try {
+      interstitial.show();
+    } catch (error) {
+      console.log(error);
+    }
+    navigation.navigate("search");
+  };
 
   return (
     <View style={styles.container}>
       {
         //swiper
       }
-      <Swiper style={styles.swiperWrapper} showsButtons loop={false}>
+      <Swiper
+        inactiveSlideScale={10}
+        showsButtons
+        loop={false}
+        paginationStyle={{ display: "none" }}
+      >
         {data?.map((item, idx) => (
           <View
             key={idx}
@@ -63,6 +85,7 @@ function Home(props) {
               alignItems: "center",
               justifyContent: "center",
               marginHorizontal: "5%",
+              height: "95%",
             }}
           >
             <SingleItem data={item} />
@@ -72,7 +95,7 @@ function Home(props) {
       {
         //footer
       }
-      <View
+      {/* <View
         style={{
           display: "flex",
           alignItems: "center",
@@ -83,7 +106,7 @@ function Home(props) {
         <MaterialIconTextButtonsFooter
           style={styles.materialIconTextButtonsFooter}
         ></MaterialIconTextButtonsFooter>
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -102,9 +125,11 @@ const styles = StyleSheet.create({
     borderRadius: 60,
   },
   swiperWrapper: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
+
   rect2: {
     top: -75,
     left: 5,

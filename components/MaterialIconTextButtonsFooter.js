@@ -1,41 +1,89 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import MaterialCommunityIconsIcon from "react-native-vector-icons/MaterialCommunityIcons";
 import Icon from "react-native-vector-icons/FontAwesome";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+//ads
+import {
+  TestIds,
+  InterstitialAd,
+  AdEventType,
+} from "react-native-google-mobile-ads";
 function MaterialIconTextButtonsFooter(props) {
+  const [loaded, setLoaded] = useState(false);
   const navigation = useNavigation();
   const user_info = useSelector((state) => state.user_info);
-  console.log("first");
+  console.log("Footer");
+  //interstatial
+  //adUnitID Interstatial
+  const adUnitIdInterstitial = __DEV__
+    ? TestIds.INTERSTITIAL
+    : "ca-app-pub-5392293533501938/1817063527";
+  const interstitial = InterstitialAd.createForAdRequest(adUnitIdInterstitial, {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ["fashion", "clothing"],
+  });
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        setLoaded(true);
+      }
+    );
+
+    // Start loading the interstitial straight away
+    interstitial.load();
+
+    // Unsubscribe from events on unmount
+    return unsubscribe;
+  }, []);
+
+  const userIconHandler = () => {
+    try {
+      interstitial.show();
+    } catch (error) {
+      console.log(error);
+    }
+    user_info.user?.token
+      ? navigation.navigate("profil", { id: user_info.user?.id })
+      : navigation.navigate("SignUp");
+  };
+  const plusIconHandler = () => {
+    try {
+      interstitial.show();
+    } catch (error) {
+      console.log(error);
+    }
+    user_info.user?.token
+      ? navigation.navigate("add")
+      : navigation.navigate("SignUp");
+  };
+  const searchIconHandler = () => {
+    try {
+      interstitial.show();
+    } catch (error) {
+      console.log(error);
+    }
+    navigation.navigate("search");
+  };
   return (
     <View style={[styles.container, props.style]}>
-      <TouchableOpacity
-        style={styles.buttonWrapper1}
-        onPress={() =>
-          user_info.user?.token
-            ? navigation.navigate("profil", { id: user_info.user?.id })
-            : navigation.navigate("SignUp")
-        }
-      >
+      {/* <TouchableOpacity style={styles.buttonWrapper1} onPress={userIconHandler}>
         <FeatherIcon name="user" style={styles.icon1}></FeatherIcon>
         <Text style={styles.btn1Text}>User</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.activeButtonWrapper}
-        onPress={() =>
-          user_info.user?.token
-            ? navigation.navigate("add")
-            : navigation.navigate("SignUp")
-        }
+        onPress={plusIconHandler}
       >
         <Icon name="plus" style={styles.activeIcon} />
         <Text style={styles.activeContent}>Add</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         style={styles.buttonWrapper2}
-        onPress={() => navigation.navigate("search")}
+        onPress={searchIconHandler}
       >
         <Icon name="search" style={styles.icon2} />
         <Text style={styles.btn2Text}>Search</Text>
@@ -49,6 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     flexDirection: "row",
     shadowColor: "#111",
+    justifyContent: "center",
     shadowOffset: {
       width: 0,
       height: -2,

@@ -2,6 +2,7 @@ import { View, Text, ScrollView,StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import SingleItem from '../components/SingleItem';
 import { useSelector } from 'react-redux';
+import Swiper from 'react-native-swiper';
 
 export default function SearchResults() {
     const search_items = useSelector((state) => state.search_items);
@@ -16,7 +17,8 @@ export default function SearchResults() {
         }
       }, [search_items]);
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+
         <View>
             <Text>
                
@@ -24,12 +26,14 @@ export default function SearchResults() {
             <Text style={styles.header}> Vos Resultats</Text>
 
         </View>
-        {
-            elts?.map(item=>(
-               <SingleItem data={item} key={item.id} /> 
-            ))
-        }
-    </ScrollView>
+        <Swiper   showsButtons loop={false}>
+            {
+                elts?.map(item=>(
+                  <SingleItem data={item} key={item.id} /> 
+                ))
+            }
+        </Swiper>
+    </View>
   )
 }
 
@@ -37,6 +41,8 @@ const styles = StyleSheet.create({
     container:{
         backgroundColor:"white",
         padding:10,
+        flex:1,
+        maxWidth:"100%"
     },
     header:{
         fontFamily: "Hoefler",

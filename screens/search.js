@@ -290,11 +290,11 @@ function Search(props) {
           resultNum={elts?.length}
         ></MaterialButtonPrimary4>
       </View>
-      <Image
+      {/* <Image
         source={require("../assets/Background-investigation-row1.png")}
         resizeMode="contain"
         style={styles.image}
-      />
+      /> */}
       {/* <Swiper style={{ marginTop: "170%" }} showsButtons loop={false}>
         {elts?.length > 0 ? (
           elts?.map((item, idx) => <SingleItem data={item} key={idx} />)
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
   },
   rect2: {
     width: windowWidth * 0.8, // Responsive width
-    height: windowHeight * 0.7, // Responsive height
+    height: "95%", // Responsive height
     alignItems: "center",
     justifyContent: "space-evenly",
     backgroundColor: "#f7ffff",

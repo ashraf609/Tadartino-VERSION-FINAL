@@ -95,15 +95,16 @@ function Profil(props) {
       />
     );
   }
+  console.log(personal_data.data);
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.button2Row}>
-        <TouchableOpacity
+      <View /*style={styles.button2Row}*/>
+        {/* <TouchableOpacity
           onPress={() => props.navigation.navigate("SignUp")}
           style={styles.button1}
         >
           <FeatherIcon name="user" style={styles.icon1}></FeatherIcon>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <View style={styles.ellipseStack}>
         <Svg viewBox="0 0 158.98 144.38" style={styles.ellipse}>
@@ -134,9 +135,18 @@ function Profil(props) {
       <Text style={styles.profil1}>
         {personal_data.data?.first_name + " " + personal_data.data?.last_name}
       </Text>
+      <Text style={{ ...styles.profil1, marginTop: 0 }}>Contact</Text>
       {/* <Text style={styles.description}>Description</Text> */}
-      <Text style={styles.description}>Email</Text>
-      <Text style={styles.description}>{personal_data.data?.email}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: personal_data.data?.phone ? "space-evenly" : "center",
+        }}
+      >
+        <Text style={styles.description}>{personal_data.data?.email}</Text>
+        <Text style={styles.description}>{personal_data.data?.phone} </Text>
+      </View>
 
       <View style={styles.annonceDuProfilRow}>
         <Text style={styles.annonceDuProfil}>Annonce du Profil:</Text>
@@ -148,6 +158,7 @@ function Profil(props) {
         style={styles.wrapper}
         inactiveSlideScale={10}
         showsButtons
+        paginationStyle={{ display: "none" }}
         loop={false}
       >
         {data?.length > 0 ? (
@@ -156,6 +167,7 @@ function Profil(props) {
               style={{
                 width: "90%",
                 marginHorizontal: "5%",
+                height: "70%",
               }}
             >
               <SingleItem data={item} key={key} />
@@ -171,12 +183,12 @@ function Profil(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "white",
   },
   wrapper: {
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 20,
   },
   materialIconTextButtonsFooter: {
     height: 57,
@@ -230,8 +242,6 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   ellipse: {
-    top: 0,
-    left: 0,
     width: 156,
     height: 144,
     position: "absolute",
@@ -261,8 +271,6 @@ const styles = StyleSheet.create({
   },
   images: {
     position: "absolute",
-    top: 16,
-    left: 18,
     height: 133,
     width: 121,
     borderWidth: 0,
@@ -270,9 +278,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   ellipseStack: {
-    width: 156,
+    width: "100%",
     height: 149,
-    marginLeft: 111,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
   },
   profil1: {
     fontFamily: "Hoefler",
