@@ -32,6 +32,8 @@ function Details(props) {
   //index of clicked upon image
   const [index, setindex] = useState(0);
   const [floors, setFloors] = useState([]);
+  const [etageData, setEtageData] = useState([]);
+
   const [visible, setIsVisible] = useState(false);
 
   const get_item = useSelector((state) => state.get_item);
@@ -46,11 +48,22 @@ function Details(props) {
       setData(get_item.data?.at(0));
 
       setImages(
-        get_item.data?.map((item) => {
-          return { url: item.image };
+        [...new Set(get_item.data?.map((item) => item.image))]?.map((item) => {
+          return {
+            url: item,
+          };
         })
       );
-      setFloors(get_item.data?.map((item) => item.floor));
+      let uniqueEtageIds = [
+        ...new Set(get_item?.data?.map((item) => item.etage_id)),
+      ];
+      console.log(uniqueEtageIds);
+      setEtageData(
+        uniqueEtageIds
+          ?.map((item) => get_item.data?.find((elt) => elt.etage_id === item))
+          ?.reverse()
+      );
+      setFloors([...new Set(get_item.data?.map((item) => item.floor))]);
     }
   }, [get_item]);
 
@@ -95,40 +108,45 @@ function Details(props) {
   console.log(images);
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {visible ? (
-        <Modal onRequestClose={() => setIsVisible(false)}>
-          <ImageViewer
-            imageUrls={images}
-            enableSwipeDown
-            onSwipeDown={() => setIsVisible(false)}
-            onCancel={() => setIsVisible(false)}
-            enableImageZoom
-            backgroundColor="none"
-            index={index}
-          />
-        </Modal>
-      ) : (
-        <Swiper>
-          {images?.map((item, key) => (
-            <TouchableOpacity
-              onPress={() => {
-                setindex(key), setIsVisible(true);
-              }}
-            >
-              <Image
-                source={{ uri: item.url }}
-                key={key}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: 20,
-                  objectFit: "cover",
+      <View style={{ height: "40%" }}>
+        {visible ? (
+          <Modal
+            onRequestClose={() => setIsVisible(false)}
+            style={{ height: "100%" }}
+          >
+            <ImageViewer
+              imageUrls={images}
+              enableSwipeDown
+              onSwipeDown={() => setIsVisible(false)}
+              onCancel={() => setIsVisible(false)}
+              enableImageZoom
+              backgroundColor="none"
+              index={index}
+            />
+          </Modal>
+        ) : (
+          <Swiper style={{ height: "100%" }}>
+            {images?.map((item, key) => (
+              <TouchableOpacity
+                onPress={() => {
+                  setindex(key), setIsVisible(true);
                 }}
-              />
-            </TouchableOpacity>
-          ))}
-        </Swiper>
-      )}
+              >
+                <Image
+                  source={{ uri: item.url }}
+                  key={key}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: 20,
+                    objectFit: "cover",
+                  }}
+                />
+              </TouchableOpacity>
+            ))}
+          </Swiper>
+        )}
+      </View>
       {/* <Modal visible={visible} transparent={true}>
         <ImageViewer
           imageUrls={images}
@@ -139,7 +157,7 @@ function Details(props) {
           backgroundColor="none"
         />
       </Modal> */}
-      <View style={styles.rect1}>
+      <ScrollView style={styles.rect1}>
         <Text style={styles.maison1}>{data.item_type}</Text>
         <Text style={styles.maison1}>{data.city}</Text>
         <View
@@ -170,29 +188,40 @@ function Details(props) {
             {data.item_type} de {data.surface} m²
           </Text>
         </View>
-        {data?.item_type !== "terrain" && data?.item_type !== "garage" && (
-          <View style={styles.button3Row}>
-            <TouchableOpacity style={styles.button3}>
-              {/* <Icon
+        {data?.item_type !== "terrain" &&
+          data?.item_type !== "garage" &&
+          etageData
+            ?.map((item) => ({
+              nb_chambres: item?.nb_chambres,
+              nb_cuisines: item?.nb_cuisines,
+              nb_salons: item?.nb_salons,
+              nb_sales_de_bain: item?.nb_sales_de_bain,
+              etageId: item?.etage_id,
+            }))
+            ?.map((item, idx) => (
+              <View style={styles.button3Row}>
+                <TouchableOpacity style={styles.button3}>
+                  {/* <Icon
                     name="bed"
                     size={34}
                     style={styles.iconRow}
                     color="white"
                   /> */}
-              <Feather
-                name="home"
-                size={35}
-                style={styles.iconRow}
-                color="white"
-              />
-            </TouchableOpacity>
-            <Text style={styles.maisonAvecJardin2}>
-              {data.nbEtage} etage(s) de {data.nb_chambres} chambre(s) avec{" "}
-              {data.nb_cuisines} cuisine(s) et {data.nb_salons} salon(s){" "}
-            </Text>
-          </View>
-        )}
-        {data?.item_type !== "terrain" && data?.item_type !== "garage" && (
+                  <Feather
+                    name="home"
+                    size={35}
+                    style={styles.iconRow}
+                    color="white"
+                  />
+                </TouchableOpacity>
+                <Text style={styles.maisonAvecJardin2}>
+                  etage {idx + 1} de {item.nb_chambres} chambre(s) avec{" "}
+                  {item.nb_cuisines} cuisine(s) et {item.nb_salons} salon(s) et{" "}
+                  {item.nb_sales_de_bain} salle(s) de bain(s)
+                </Text>
+              </View>
+            ))}
+        {/*data?.item_type !== "terrain" && data?.item_type !== "garage" && (
           <View style={styles.button3Row}>
             <TouchableOpacity style={styles.button3}>
               <Icon
@@ -206,7 +235,7 @@ function Details(props) {
               {data.nb_sales_de_bain} salle(s) de bains
             </Text>
           </View>
-        )}
+        )*/}
         <View style={styles.button3Row}>
           <TouchableOpacity style={styles.button3}>
             <Icons name="cash" size={34} style={styles.iconRow} color="white" />
@@ -217,8 +246,8 @@ function Details(props) {
               : "Prix non spécifié"}{" "}
           </Text>
         </View>
-      </View>
-      <View
+      </ScrollView>
+      {/* <View
         style={{
           display: "flex",
           flexDirection: "row",
@@ -228,7 +257,7 @@ function Details(props) {
           marginTop: 10,
         }}
       >
-        {/* <MaterialButtonPrimary30
+        <MaterialButtonPrimary30
           style={{ width: 150, height: 50, borderRadius: 19 }}
         ></MaterialButtonPrimary30>
         <MaterialButtonPrimary51
@@ -237,17 +266,15 @@ function Details(props) {
             height: 50,
             borderRadius: 19,
           }}
-        ></MaterialButtonPrimary51> */}
-      </View>
+        ></MaterialButtonPrimary51> 
+      </View> */}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: "flex-start",
-    justifyContent: "space-between",
+    height: "95%",
     backgroundColor: "white",
     borderWidth: 0,
     borderColor: "#000000",
@@ -285,7 +312,9 @@ const styles = StyleSheet.create({
     borderRadius: 76,
     left: 40,
   },
-  rect1: {},
+  rect1: {
+    height: "60%",
+  },
   maison1: {
     fontFamily: "Hoefler",
     color: "#104d69",
