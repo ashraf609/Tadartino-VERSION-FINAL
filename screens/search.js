@@ -59,14 +59,14 @@ const windowHeight = Dimensions.get("window").height;
 function Search(props) {
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValueCateg, setSelectedValueCateg] = useState("");
   const search_items = useSelector((state) => state.search_items);
-  const [elts, setElts] = useState(search_items.data);
+  const [elts, setElts] = useState([]);
 
   //data object to store search values
 
   const data = useRef(searchData);
   const dispatch = useDispatch();
-  console.log(search_items);
 
   useEffect(() => {
     searchData = {
@@ -82,7 +82,7 @@ function Search(props) {
     };
     data.current = searchData;
     console.log("requesting ...");
-    searchHandler(false, "city", " like ", data.current?.city?.values || "%");
+    //searchHandler();
   }, []);
 
   const clearFilters = () => {
@@ -97,10 +97,12 @@ function Search(props) {
         )
       );
     }
-  }, [search_items]);
+  }, [search_items.data]);
   //search handler implementation
 
   const searchHandler = (remove, key, op, value) => {
+    console.log("searchHandler is being called !!!");
+    console.log(remove, key, op, value);
     let info = {};
 
     //asserting new data to data obj
@@ -189,16 +191,17 @@ function Search(props) {
           Type de recherche
         </Text>
         <Picker
-          selectedValue={selectedValue}
+          selectedValue={selectedValueCateg}
           //onValueChange={(itemValue) => setSelectedValue(itemValue)}
-          onValueChange={(itemValue) =>
+          onValueChange={(itemValue) => {
+            setSelectedValueCateg(itemValue);
             searchHandler(
               false,
               "categorie",
               " like ",
               itemValue + (itemValue?.length > 0 ? "%" : "")
-            )
-          }
+            );
+          }}
           style={styles.typeDeBiens}
         >
           <Picker.Item label="Achat" value="vente" style={styles.typeDeBiens} />
@@ -210,24 +213,21 @@ function Search(props) {
         <Picker
           selectedValue={selectedValue}
           //onValueChange={(itemValue) => setSelectedValue(itemValue)}
-          onValueChange={(itemValue) =>
+          onValueChange={(itemValue) => {
+            setSelectedValue(itemValue);
             searchHandler(
               false,
               "type",
               " like ",
               itemValue + (itemValue?.length > 0 ? "%" : "")
-            )
-          }
+            );
+          }}
           style={styles.typeDeBiens}
         >
-          <Picker.Item
-            label="Villas"
-            value="Villas"
-            style={styles.typeDeBiens}
-          />
-          <Picker.Item label="Terrain" value="Terrain" />
-          <Picker.Item label="Maison" value="Maison" />
-          <Picker.Item label="Appartement" value="Appartement" />
+          <Picker.Item label="Villas" value="villa" />
+          <Picker.Item label="Terrain" value="terrain" />
+          <Picker.Item label="Maison" value="maison" />
+          <Picker.Item label="Appartement" value="appt" />
         </Picker>
         <Text
           keyboardType="numeric"

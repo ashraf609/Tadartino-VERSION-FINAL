@@ -16,6 +16,7 @@ export default function SearchResults() {
           );
         }
       }, [search_items]);
+      console.log(elts,search_items.data)
   return (
     <View style={styles.container}>
 
@@ -23,13 +24,13 @@ export default function SearchResults() {
             <Text>
                
             </Text>
-            <Text style={styles.header}> Vos Resultats</Text>
+            <Text style={styles.header}> {elts.length>0?"Vos Resultats":"Aucune Resultat"}</Text>
 
         </View>
-        <Swiper   showsButtons loop={false}>
+        <Swiper paginationStyle={{display:"none"}}   showsButtons loop={false}>
             {
                 elts?.map(item=>(
-                  <SingleItem data={item} key={item.id} /> 
+                  <SingleItem data={item} key={item?.id} /> 
                 ))
             }
         </Swiper>

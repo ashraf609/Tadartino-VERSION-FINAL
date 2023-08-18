@@ -21,7 +21,6 @@ const windowHeight = Dimensions.get("window").height;
 function Home(props) {
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [data, setData] = useState([]);
-  console.log("home is running");
 
   const get_all_items = useSelector((state) => state.get_all_items);
   const dispatch = useDispatch();
