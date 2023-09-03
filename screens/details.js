@@ -10,6 +10,7 @@ import {
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { Feather } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icons from "react-native-vector-icons/MaterialCommunityIcons";
 import Swiper from "react-native-swiper";
@@ -21,6 +22,7 @@ import { ScrollView } from "react-native";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import { BackHandler } from "react-native";
+import * as Linking from "expo-linking";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -37,6 +39,20 @@ function Details(props) {
   const [visible, setIsVisible] = useState(false);
 
   const get_item = useSelector((state) => state.get_item);
+  //floor link
+  const url = data?.floor_link || "https://app.cloudpano.com/tours/auZ3biQ513d";
+  const openFloorLink = async () => {
+    Linking.openURL(url);
+  };
+  //map link
+  const mapUrl =
+    data?.maps ||
+    "https://www.google.com/maps/search/?api=1&query=39.05006558312391,-2.192836148486681";
+  //"https://www.google.com/maps/embed?pb=!4v1682339649230!6m8!1m7!1sDZG4RnJ-erFsAfnyNab--w!2m2!1d39.05006558312391!2d-2.192836148486681!3f122.0498262270558!4f-16.395812314559564!5f0.7820865974627469";
+
+  const openMapLink = async () => {
+    Linking.openURL(mapUrl);
+  };
   const dispatch = useDispatch();
   console.log(id, get_item);
   useEffect(() => {
@@ -158,8 +174,37 @@ function Details(props) {
         />
       </Modal> */}
       <ScrollView style={styles.rect1}>
-        <Text style={styles.maison1}>{data.item_type}</Text>
-        <Text style={styles.maison1}>{data.city}</Text>
+        <View style={styles.infoHeader}>
+          <View>
+            <Text style={styles.maison1}>{data.item_type}</Text>
+            <Text style={styles.maison1}>{data.city}</Text>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            {data.floor_link && (
+              <TouchableOpacity
+                style={{ ...styles.button3, marginRight: 5 }}
+                onPress={openFloorLink}
+              >
+                <MaterialCommunityIcons
+                  name="augmented-reality"
+                  size={35}
+                  style={styles.iconRow}
+                  color="white"
+                />
+              </TouchableOpacity>
+            )}
+            {data.maps && (
+              <TouchableOpacity style={styles.button3} onPress={openMapLink}>
+                <Feather
+                  name="map-pin"
+                  size={35}
+                  style={styles.iconRow}
+                  color="white"
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
         <View
           style={{
             flexDirection: "row",
@@ -171,7 +216,9 @@ function Details(props) {
           <Text style={styles.maisonAvecJardin1}>{data.title}</Text>
           <Text style={styles.maisonAvecJardin1}>
             {data?.price
-              ? formatPrice(data.price) + " MAD"
+              ? formatPrice(data.price) +
+                " MAD" +
+                (data.type_payement ? " / " + data.type_payement : "")
               : "Prix non spécifié"}
           </Text>
         </View>
@@ -292,6 +339,13 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
   },
+  webview: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    height: "90%",
+    width: "100%",
+  },
   wrapper: {
     height: "100%",
     position: "relative",
@@ -315,6 +369,13 @@ const styles = StyleSheet.create({
   rect1: {
     height: "60%",
   },
+  infoHeader: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    paddingHorizontal: "5%",
+    paddingTop: "1%",
+  },
   maison1: {
     fontFamily: "Hoefler",
     color: "#104d69",
@@ -325,7 +386,6 @@ const styles = StyleSheet.create({
     fontFamily: "Hoefler",
     color: "#104d69",
     fontSize: 14,
-    width: "90%",
   },
   iconRow: {},
   button3: {

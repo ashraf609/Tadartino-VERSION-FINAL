@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Tadartino",
-    "slug": "tadartinoappfinal",
+    "slug": "tadartino",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/lo9o.png",
@@ -11,26 +11,29 @@
       "resizeMode": "contain",
       "backgroundColor": "#104d69"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "package": "com.ashrafdev33.Immeuble",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/lo9o.png",
         "backgroundColor": "#104d69"
-      },
-      "package": "com.ashrafdev33.Immeuble"
+      }
     },
     "web": {
       "favicon": "./assets/lo9o.png"
     },
     "extra": {
       "eas": {
-        "projectId": "1310a892-f2c4-4e0f-b667-575b9056ab98"
+        "projectId": "9a2797a8-f6e3-449f-8965-c204c4d3c54c"
       }
     },
-    "owner": "oussama-pixel"
+    "owner": "oussama222"
   },
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-5392293533501938~4365381415"

@@ -56,6 +56,7 @@ export default function SingleItem({ data }) {
     }
     navigation.navigate("details",{id:data.item_id})
   }
+  console.log(data)
   return (
     <View style={styles.rect2Stack} >
       <Image
@@ -64,24 +65,39 @@ export default function SingleItem({ data }) {
         style={styles.image}
       ></Image>
       <View style={styles.rect2}>
+        <Text style={{...styles.maisonAvecJardin,fontSize:23,textAlign:"center"}}>{data.category==="vente"?"A Vendre":"A Louer"}</Text>
+        <Text style={styles.maisonAvecJardin}>{data.title}</Text>
         <View style={{flexDirection:"row",justifyContent:"space-between",alignItems:"center",paddingHorizontal:"5%"}}>
           <Text style={styles.maison}>{data.type}</Text>
           <Text style={styles.maison}>{data.city}</Text>
-
         </View>
-        <Text style={styles.maisonAvecJardin}>{data.title}</Text>
         <View style={styles.button3Row}>
+          <Text 
+            style={{
+              fontSize: 20,
+              color: "rgba(16,77,105,100)",
+              fontFamily: "Hoefler",
+            }}
+          >
+            {
+              data.price>0
+              ?
+              data.price+" MAD "+(data.type_payement?" / "+data.type_payement:"")
+              :
+              "Prix non spécifié"
+
+            }
+          </Text>
           <Text
             style={{
               fontSize: 20,
-
               color: "rgba(16,77,105,100)",
               fontFamily: "Hoefler",
               textDecorationLine: "underline",
             }}
             onPress={handleShowProfile}
           >
-            Profil
+            Profile
           </Text>
         </View>
         <View style={{justifyContent:"center",alignItems:"center",marginVertical:20}}>
@@ -98,6 +114,7 @@ export default function SingleItem({ data }) {
 const styles = StyleSheet.create({
   rect2Stack: {
     //marginTop: windowHeight * 0.14,
+    height:"100%",
     width: "100%", // Responsive width
     alignItems: "center",
     justifyContent:"space-between",
@@ -119,31 +136,34 @@ const styles = StyleSheet.create({
     //marginLeft: windowWidth * 0.1,
   },
   image: {
-    minHeight:"50%",
+    height:"40%",
     width:"100%",
     borderRadius:20
   },
   rect2: {
     width: "100%",
+    height:"60%",
     overflow: "visible",
+    justifyContent:"space-evenly"
   },
   maison: {
     fontFamily: "Hoefler",
     color: "#104d69",
-    fontSize: 29,
+    fontSize: 18,
     marginLeft: 15,
   },
   maisonAvecJardin: {
     fontFamily: "Hoefler",
     color: "#104d69",
-    fontSize: 14,
+    fontSize: 25,
     marginLeft: 15,
   },
   button3Row: {
     height: 46,
     flexDirection: "row",
     alignItems:"center",
-    justifyContent:"flex-end",
+    justifyContent:"space-between",
+    paddingHorizontal:"5%",
     paddingRight:15,
 
   },
